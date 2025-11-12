@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookApt | Oryn Inc.</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/ORYN_Logo_Web_Assets/oryn_logo_vertical_32.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="brand" href="index.html">
+        <img class="brand-logo" src="assets/ORYN_Logo_Web_Assets/oryn_logo_vertical_128.png" alt="Oryn logo">
+        <span class="brand-text">
+          <span class="tagline">Transforming ideas into intelligent solutions</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="software.html">Software &amp; Mobile Apps</a>
+        <a href="consulting.html">Consulting Services</a>
+        <a href="project-management.html">Project Management</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="container">
+        <span class="eyebrow">Product Spotlight</span>
+        <h1>BookApt Scheduling Platform</h1>
+        <p>BookApt empowers service-focused businesses with intelligent appointment scheduling, real-time insights, and embedded automation that delights customers while streamlining operations.</p>
+        <div class="cta-group">
+          <a class="cta" href="http://localhost:3001" target="_blank" rel="noopener">Launch the BookApt web app</a>
+          <a class="cta-secondary" href="assets/bookapt-widget.zip" download>Download the BookApt widget package</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="highlight">
+          <h2>Designed for modern service delivery</h2>
+          <p>BookApt blends Oryn’s AI expertise with customer-centric design to remove friction from booking journeys. Teams can configure tailored experiences, optimize staffing, and act on data that keeps utilization high.</p>
+        </div>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Core capabilities</h3>
+            <ul>
+              <li>Smart availability and preference-based scheduling</li>
+              <li>Automated reminders with two-way confirmations</li>
+              <li>Role-based dashboards for staff and leadership</li>
+              <li>AI-driven intent detection for self-service bookings</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>Experience enhancements</h3>
+            <ul>
+              <li>Embeddable widget for websites, portals, and mobile apps</li>
+              <li>White-label themes and localization support</li>
+              <li>Omnichannel messaging integrations</li>
+              <li>Accessibility-first design patterns</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Integrate with your ecosystem</h2>
+        <p>BookApt connects with leading CRMs, billing systems, and collaboration suites. Our API-first architecture and pre-built connectors accelerate deployment while supporting custom workflows.</p>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Platform integrations</h3>
+            <ul>
+              <li>Customer engagement: Salesforce, HubSpot, Microsoft Dynamics</li>
+              <li>Productivity and collaboration: Microsoft 365, Google Workspace, Slack</li>
+              <li>Payments and invoicing: Stripe, Square, QuickBooks</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>Security and compliance</h3>
+            <ul>
+              <li>Data residency options with encryption in transit and at rest</li>
+              <li>Audit logging and granular access controls</li>
+              <li>Support for SOC 2 and HIPAA-aligned environments</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Get started with BookApt</h2>
+        <p>Access the embeddable widget, review implementation guides, and connect with Oryn consultants to tailor BookApt to your business model.</p>
+        <div class="cta-group">
+          <a class="cta" href="http://localhost:3001" target="_blank" rel="noopener">Launch the BookApt web app</a>
+          <a class="cta" href="assets/bookapt-widget.zip" download>Download the BookApt widget package</a>
+          <a class="cta-secondary" href="mailto:hello@oryn.com?subject=BookApt%20Implementation%20Request">Request an implementation workshop</a>
+          <a class="cta-secondary" href="software.html">Explore all software offerings</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> Oryn Inc. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+</html>
+
