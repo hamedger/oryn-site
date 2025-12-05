@@ -1,0 +1,15 @@
+Add Privacy Policy and Support pages for App Store submission
+
+- Added comprehensive privacy-policy.html page with full privacy policy
+- Added support.html page with contact information and FAQs
+- Updated navigation on all pages to include Support link
+- Updated footer on all pages to include Privacy Policy and Support links
+
+These pages are required for Apple App Store submission and provide:
+- Privacy Policy URL (required by App Store)
+- Support URL (required by App Store)
+- Professional, accessible legal pages
+- Consistent styling with existing website
+
+Ready for deployment and App Store submission.
+
