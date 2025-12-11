@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookAPT Founding Members - 50% Off First Year | Oryn Solutions</title>
+    <meta name="description" content="Join BookAPT as a Founding Member and get 50% off your first year. Add online booking to your website in 2 minutes. Limited to first 200 businesses.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://orynsolutions.io/bookapt-founding-members">
+    <meta property="og:title" content="BookAPT Founding Members - 50% Off First Year">
+    <meta property="og:description" content="Join BookAPT as a Founding Member and get 50% off your first year. Limited to first 200 businesses.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://orynsolutions.io/bookapt-founding-members">
+    <meta property="twitter:title" content="BookAPT Founding Members - 50% Off First Year">
+    <meta property="twitter:description" content="Join BookAPT as a Founding Member and get 50% off your first year. Limited to first 200 businesses.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+        
+        .header .limited {
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 900px;
+        }
+        
+        .pricing-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .pricing-box .original-price {
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-box .founding-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-box .savings {
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .feature p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 20px 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .cta-button.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .testimonials {
+            margin: 40px 0;
+        }
+        
+        .testimonial {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .testimonial .quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial .author {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .urgency-banner {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .urgency-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .urgency-left {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .urgency-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+        
+        .urgency-spots {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .urgency-right {
+            text-align: right;
+            min-width: 150px;
+        }
+        
+        .urgency-savings-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .urgency-savings-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .urgency-savings-percent {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        
+        .countdown {
+            text-align: center;
+            padding: 30px;
+            background: #fff3cd;
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 2px solid #ffc107;
+        }
+        
+        .countdown h3 {
+            color: #856404;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .spots-container {
+            margin: 20px 0;
+        }
+        
+        .spots-large {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .spots-label {
+            font-size: 1.2rem;
+            color: #856404;
+            font-weight: 600;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #ffeaa7;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #fdcb6e;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .countdown .spots {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #856404;
+        }
+        
+        .faq {
+            margin: 40px 0;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .faq-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .faq-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .pricing-box .founding-price {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 1.2rem;
+            }
+            
+            .urgency-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .urgency-right {
+                text-align: center;
+            }
+            
+            .urgency-spots {
+                font-size: 1.5rem;
+            }
+            
+            .urgency-savings-amount {
+                font-size: 1.5rem;
+            }
+            
+            .spots-large {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 BookAPT Founding Members</h1>
+            <p class="subtitle">Join the Future of Online Booking</p>
+            <p class="subtitle">Get Professional Plan for $14.99/month (75% Off)</p>
+            <div class="limited">⚡ Limited to First 200 Businesses Only</div>
+        </div>
+        
+        <!-- Urgency Banner with Savings -->
+        <div class="urgency-banner" id="urgency-banner">
+            <div class="urgency-content">
+                <div class="urgency-left">
+                    <div class="urgency-title">⏰ Limited Time Offer</div>
+                    <div class="urgency-spots" id="urgency-spots">Only 147 spots remaining</div>
+                </div>
+                <div class="urgency-right">
+                    <div class="urgency-savings-label">You Save</div>
+                    <div class="urgency-savings-amount">$528.06/year</div>
+                    <div class="urgency-savings-percent">75% OFF</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="pricing-box">
+                <div class="original-price">Regular Price: $708/year ($59/month)</div>
+                <div class="founding-price">$179.94/year</div>
+                <div class="savings">Save $528.06 (75% Off)</div>
+                <p style="margin-top: 20px; opacity: 0.9;">Lock in this price for 5 years as a Founding Member</p>
+            </div>
+            
+            <div class="countdown">
+                <h3>⏰ Limited to First 200 Businesses</h3>
+                <div class="spots-container">
+                    <div class="spots-large" id="spots-left">147</div>
+                    <div class="spots-label">spots remaining</div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 26.5%;"></div>
+                </div>
+                <p style="margin-top: 15px; color: #856404; font-weight: 600;">53 businesses have already joined. Don't miss out!</p>
+                <p style="margin-top: 5px; color: #856404; font-size: 0.9rem;">Join now before we reach 200 Founding Members</p>
+            </div>
+            
+            <div class="cta-section">
+                <h2 style="color: #667eea; margin-bottom: 20px; font-size: 2rem;">Ready to Get Started?</h2>
+                <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">Join 53+ businesses who've already become Founding Members</p>
+                <a href="#signup" class="cta-button">Become a Founding Member</a>
+                <a href="#learn-more" class="cta-button secondary">Learn More</a>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>✅ What You Get</h3>
+                    <p>Full BookAPT Professional plan with all features included. Get up to 200 appointments/month, advanced scheduling, worker management, payment processing, and more. Add online booking to your website in 2 minutes.</p>
+                </div>
+                <div class="feature">
+                    <h3>💰 75% Savings</h3>
+                    <p>Pay just $179.94 for your first year (regular price $708). That's $14.99/month instead of $59/month. Save $528.06 per year!</p>
+                </div>
+                <div class="feature">
+                    <h3>🔒 Locked-In Price</h3>
+                    <p>As a Founding Member, you'll keep this discounted rate for 5 years. Your price won't increase during this time.</p>
+                </div>
+                <div class="feature">
+                    <h3>🎁 Bonus Features</h3>
+                    <p>Get priority support, early access to new features, and exclusive Founding Member benefits.</p>
+                </div>
+            </div>
+            
+            <div id="learn-more">
+                <h2 style="color: #667eea; margin: 40px 0 20px; text-align: center;">Why BookAPT?</h2>
+                
+                <div class="features">
+                    <div class="feature">
+                        <h3>📅 2-Minute Setup</h3>
+                        <p>Add online booking to your website in just 2 minutes. No coding required. Works on WordPress, Wix, Squarespace, and any website.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📈 40% More Bookings</h3>
+                        <p>Businesses using BookAPT see an average 40% increase in appointments. 24/7 booking availability means you never miss a customer.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>💳 Payment Processing</h3>
+                        <p>Accept payments online. Reduce no-shows with deposits. Process payments securely with Stripe integration.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📱 Mobile App</h3>
+                        <p>Manage bookings on the go with our iOS and Android apps. Your customers can book from anywhere, anytime.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonials">
+                <h2 style="color: #667eea; margin: 40px 0 20px; text-align: center;">What Founding Members Say</h2>
+                
+                <div class="testimonial">
+                    <div class="quote">"I signed up as a Founding Member and saved $180 in the first year. The widget was super easy to install and I'm already seeing more bookings!"</div>
+                    <div class="author">- Sarah M., Hair Salon Owner</div>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="quote">"Best decision I made this year. The 50% discount is amazing, and the platform is so easy to use. My customers love being able to book online."</div>
+                    <div class="author">- Mike T., Fitness Studio Owner</div>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="quote">"I was hesitant at first, but the Founding Member discount made it a no-brainer. I've already made back the cost in increased bookings."</div>
+                    <div class="author">- Jennifer L., Massage Therapist</div>
+                </div>
+            </div>
+            
+            <div class="faq">
+                <h2 style="color: #667eea; margin: 40px 0 20px; text-align: center;">Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <h4>What is a Founding Member?</h4>
+                    <p>A Founding Member is one of the first 200 businesses to join BookAPT. You get 50% off your first year and lock in this price for 5 years.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>What do I get with the Founding Member plan?</h4>
+                    <p>You get the full BookAPT Professional plan ($59/month value) for just $14.99/month for your first year. That's 75% off! This includes up to 200 appointments/month, advanced scheduling, worker management, payment processing, analytics, and all Professional features.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>Can I cancel anytime?</h4>
+                    <p>Yes, you can cancel anytime. However, if you cancel, you'll lose your Founding Member discount. We're confident you'll love BookAPT!</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>What happens after the first year?</h4>
+                    <p>After your first year, you'll continue to pay the discounted Founding Member rate ($14.99/month) for 5 years total. After 5 years, you'll have the option to renew at a discounted rate.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>How long is the price locked?</h4>
+                    <p>Your Founding Member price is locked for 5 years from your signup date. After 5 years, you'll have the option to renew at a discounted rate to continue enjoying savings.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>Is there a setup fee?</h4>
+                    <p>No setup fees, no hidden costs. Just $179.94 for your first year (paid upfront) or $14.99/month if you prefer monthly billing.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>How do I install the widget?</h4>
+                    <p>It takes just 2 minutes! We'll send you a simple code to paste into your website. No coding knowledge required. We also provide step-by-step guides for WordPress, Wix, Squarespace, and more.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4>What if I need help?</h4>
+                    <p>Founding Members get priority support. You can reach us via email, chat, or phone. We're here to help you succeed!</p>
+                </div>
+            </div>
+            
+            <div id="signup" class="cta-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h2 style="color: white; margin-bottom: 20px; font-size: 2rem;">Join as a Founding Member Today</h2>
+                <p style="margin-bottom: 30px; font-size: 1.1rem; opacity: 0.95;">Only 147 spots remaining. Don't miss out on this exclusive offer.</p>
+                
+                <form id="signup-form" style="max-width: 500px; margin: 0 auto;">
+                    <input type="text" id="business-name" placeholder="Business Name" required 
+                           style="width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 8px; font-size: 1rem;">
+                    
+                    <input type="email" id="email" placeholder="Your Email" required 
+                           style="width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 8px; font-size: 1rem;">
+                    
+                    <input type="tel" id="phone" placeholder="Phone Number" required 
+                           style="width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 8px; font-size: 1rem;">
+                    
+                    <select id="plan" required 
+                            style="width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 8px; font-size: 1rem;">
+                        <option value="">Select Payment Plan</option>
+                        <option value="annual">Annual - $179.94/year (Save $528.06 - 75% Off)</option>
+                        <option value="monthly">Monthly - $14.99/month (Save 75% - Locked for 5 years)</option>
+                    </select>
+                    
+                    <button type="submit" class="cta-button" style="width: 100%; margin: 0;">
+                        Become a Founding Member
+                    </button>
+                    
+                    <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.9;">
+                        By signing up, you agree to our <a href="https://orynsolutions.io/privacy-policy.html" style="color: white; text-decoration: underline;">Privacy Policy</a> and <a href="https://orynsolutions.io/terms.html" style="color: white; text-decoration: underline;">Terms of Service</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by <a href="https://orynsolutions.io">Oryn Solutions</a></p>
+            <p style="margin-top: 10px; opacity: 0.8;">
+                <a href="https://orynsolutions.io/support.html">Support</a> | 
+                <a href="https://orynsolutions.io/privacy-policy.html">Privacy Policy</a> | 
+                <a href="mailto:info@orynsolutions.io">Contact Us</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Update spots remaining (mock data - replace with real data from your backend)
+        function updateSpotsRemaining() {
+            // In production, fetch from your backend API
+            // Example: fetch('/api/founding-members/count').then(...)
+            const totalSpots = 200;
+            const takenSpots = 53; // UPDATE: Replace with real count from your database
+            const remaining = totalSpots - takenSpots;
+            const percentage = (takenSpots / totalSpots) * 100;
+            
+            // Update urgency banner
+            const urgencySpots = document.getElementById('urgency-spots');
+            if (urgencySpots) {
+                urgencySpots.textContent = `Only ${remaining} spots remaining`;
+            }
+            
+            // Update countdown section
+            const spotsLeft = document.getElementById('spots-left');
+            if (spotsLeft) {
+                spotsLeft.textContent = remaining;
+            }
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = `${takenSpots}/200`;
+            }
+            
+            // Update signup section text
+            const signupText = document.querySelector('#signup p');
+            if (signupText && remaining > 0) {
+                signupText.textContent = `Only ${remaining} spots remaining. Don't miss out on this exclusive offer.`;
+            } else if (signupText && remaining === 0) {
+                signupText.textContent = 'All Founding Member spots are taken! Join our waitlist for future opportunities.';
+                document.getElementById('signup-form').style.display = 'none';
+            }
+            
+            // Update CTA section
+            const ctaText = document.querySelector('.cta-section p');
+            if (ctaText && remaining > 0) {
+                ctaText.textContent = `Join ${takenSpots}+ businesses who've already become Founding Members`;
+            }
+        }
+        
+        // Form submission - Redirect to webapp for payment processing
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const businessName = document.getElementById('business-name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const plan = document.getElementById('plan').value;
+            
+            // Optional: Save to localStorage for webapp to pick up
+            localStorage.setItem('foundingMemberSignup', JSON.stringify({
+                businessName: businessName,
+                email: email,
+                phone: phone,
+                plan: plan,
+                timestamp: new Date().toISOString()
+            }));
+            
+            // Build redirect URL to webapp with Founding Member parameters
+            const webappUrl = new URL('https://bookapt.io/signup');
+            webappUrl.searchParams.set('foundingMember', 'true');
+            webappUrl.searchParams.set('businessName', encodeURIComponent(businessName));
+            webappUrl.searchParams.set('email', encodeURIComponent(email));
+            webappUrl.searchParams.set('phone', encodeURIComponent(phone));
+            webappUrl.searchParams.set('plan', plan);
+            webappUrl.searchParams.set('discount', '75'); // 75% off (Professional plan)
+            webappUrl.searchParams.set('source', 'founding-members-landing');
+            
+            // Redirect to webapp for account creation and payment
+            window.location.href = webappUrl.toString();
+        });
+        
+        // Initialize on page load
+        updateSpotsRemaining();
+        
+        // Update every 5 minutes (in production, use WebSocket or polling from your backend)
+        setInterval(updateSpotsRemaining, 300000);
+        
+        // Also update when page becomes visible (user switches tabs)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateSpotsRemaining();
+            }
+        });
+    </script>
+</body>
+</html>
+
