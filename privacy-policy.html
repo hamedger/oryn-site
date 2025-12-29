@@ -63,9 +63,29 @@
           <ul>
             <li><strong>Device Information:</strong> Device type, operating system, unique device identifiers, mobile network information</li>
             <li><strong>Usage Data:</strong> Pages viewed, features used, time spent, interaction patterns</li>
-            <li><strong>Location Data:</strong> General location information (with your permission) to help you find nearby businesses</li>
+            <li><strong>Location Data:</strong> 
+              <ul style="margin-top: 0.5rem;">
+                <li>GPS coordinates (if location services are enabled and permission is granted)</li>
+                <li>IP-based location information</li>
+                <li><strong>Zipcode/Postal Code:</strong> We collect your zipcode/postal code during account registration, which is required to provide location-based services such as finding nearby businesses</li>
+                <li><strong>Geographic Coordinates:</strong> We convert your zipcode to latitude/longitude coordinates using geocoding services (Nominatim/OpenStreetMap or Google Geocoding API) to enable business search functionality</li>
+                <li>Address information you provide during registration</li>
+              </ul>
+            </li>
             <li><strong>Log Data:</strong> IP address, browser type, access times, referring URLs</li>
           </ul>
+          
+          <div style="background: #f0f7ff; border-left: 4px solid #0066cc; padding: 1rem; margin-top: 1rem; border-radius: 4px;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>Location Data Collection and Consent:</strong></p>
+            <p style="margin: 0 0 0.5rem 0;">By providing your zipcode/postal code and address during registration, you consent to:</p>
+            <ul style="margin: 0.5rem 0 0 1.5rem;">
+              <li>Collection of your zipcode and address information</li>
+              <li>Conversion of your zipcode to geographic coordinates using geocoding services</li>
+              <li>Sharing of location coordinates with Foursquare Places API to search for nearby businesses that may not yet be registered on our platform</li>
+              <li>Use of location data to provide location-based services and business recommendations</li>
+            </ul>
+            <p style="margin: 0.5rem 0 0 0;"><strong>You can update or delete your location information at any time through your Profile Settings.</strong></p>
+          </div>
         </div>
 
         <div class="info-card" style="margin-top: 2rem;">
@@ -80,6 +100,8 @@
             <li>Detect, prevent, and address technical issues and security threats</li>
             <li>Comply with legal obligations and enforce our terms of service</li>
             <li>Analyze usage patterns to improve user experience</li>
+            <li><strong>Find nearby businesses:</strong> Use your zipcode to search for businesses and services in your area using Foursquare Places API</li>
+            <li><strong>Location-based recommendations:</strong> Show you relevant businesses based on your location</li>
           </ul>
         </div>
 
@@ -95,6 +117,12 @@
             <li>Email and SMS delivery services</li>
             <li>Analytics and performance monitoring</li>
             <li>Customer support platforms</li>
+            <li><strong>Location and Business Search Services:</strong>
+              <ul style="margin-top: 0.5rem;">
+                <li><strong>Foursquare Places API:</strong> We share your zipcode (converted to geographic coordinates) with Foursquare to search for businesses near your location. Foursquare uses this data to return relevant business listings. Their use of this data is governed by Foursquare's privacy policy.</li>
+                <li><strong>Geocoding Services:</strong> We use Nominatim (OpenStreetMap) and optionally Google Geocoding API to convert zipcodes to coordinates. These services process your zipcode but do not receive other personal information.</li>
+              </ul>
+            </li>
           </ul>
           <p>These service providers are contractually obligated to protect your information and use it only for the purposes we specify.</p>
 
