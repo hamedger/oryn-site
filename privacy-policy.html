@@ -49,45 +49,20 @@
 
         <div class="info-card" style="margin-top: 2rem;">
           <h2>2. Information We Collect</h2>
+          <p>We collect information you provide (name, email, phone, address) and information collected automatically (device info, usage data, location).</p>
           
-          <h3>2.1 Information You Provide</h3>
-          <p>We collect information that you provide directly to us, including:</p>
-          <ul>
-            <li><strong>Account Information:</strong> Name, email address, phone number, password, and other registration details</li>
-            <li><strong>Business Information:</strong> Company name, business type, address, and other business details</li>
-            <li><strong>Appointment Data:</strong> Booking details, service preferences, appointment history</li>
-            <li><strong>Payment Information:</strong> Billing address, payment method details (processed securely through third-party payment processors)</li>
-            <li><strong>Communication Data:</strong> Messages, support requests, feedback, and other communications</li>
-          </ul>
-
-          <h3>2.2 Automatically Collected Information</h3>
-          <p>We may automatically collect certain information when you use our Services:</p>
-          <ul>
-            <li><strong>Device Information:</strong> Device type, operating system, unique device identifiers, mobile network information</li>
-            <li><strong>Usage Data:</strong> Pages viewed, features used, time spent, interaction patterns</li>
-            <li><strong>Location Data:</strong> 
-              <ul style="margin-top: 0.5rem;">
-                <li>GPS coordinates (if location services are enabled and permission is granted)</li>
-                <li>IP-based location information</li>
-                <li><strong>Zipcode/Postal Code:</strong> We collect your zipcode/postal code during account registration, which is required to provide location-based services such as finding nearby businesses</li>
-                <li><strong>Geographic Coordinates:</strong> We convert your zipcode to latitude/longitude coordinates using geocoding services (Nominatim/OpenStreetMap or Google Geocoding API) to enable business search functionality</li>
-                <li>Address information you provide during registration</li>
-              </ul>
-            </li>
-            <li><strong>Log Data:</strong> IP address, browser type, access times, referring URLs</li>
-          </ul>
-          
+          <h3 style="margin-top: 1.5rem;">Location Data Collection</h3>
           <div style="background: #f0f7ff; border-left: 4px solid #0066cc; padding: 1rem; margin-top: 1rem; border-radius: 4px;">
-            <p style="margin: 0 0 0.5rem 0;"><strong>Location Data Collection and Consent:</strong></p>
-            <p style="margin: 0 0 0.5rem 0;">By providing your zipcode/postal code and address during registration, you consent to:</p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>By providing your zipcode/postal code and address during registration, you consent to our collection and use of location data for the following purposes:</strong></p>
             <ul style="margin: 0.5rem 0 0 1.5rem;">
-              <li>Collection of your zipcode and address information</li>
-              <li>Conversion of your zipcode to geographic coordinates using geocoding services</li>
-              <li>Sharing of location coordinates with Foursquare Places API to search for nearby businesses that may not yet be registered on our platform</li>
-              <li>Use of location data to provide location-based services and business recommendations</li>
+              <li><strong>Business Search:</strong> We use your zipcode to convert it to geographic coordinates (latitude/longitude) using geocoding services to help you find nearby businesses and services</li>
+              <li><strong>Third-Party Services:</strong> We share your zipcode (converted to coordinates) with Foursquare Places API to search for businesses near your location that may not yet be registered on BookAPT</li>
+              <li><strong>Service Improvement:</strong> Location data helps us personalize your experience and show relevant businesses in your area</li>
             </ul>
             <p style="margin: 0.5rem 0 0 0;"><strong>You can update or delete your location information at any time through your Profile Settings.</strong></p>
           </div>
+          <p style="margin-top: 1rem;"><strong>Geocoding Services:</strong> We use third-party geocoding services (Nominatim/OpenStreetMap and optionally Google Geocoding API) to convert your zipcode to coordinates. These services process your zipcode but do not receive other personal information.</p>
+          <p><strong>Foursquare API:</strong> We use Foursquare Places API to search for businesses. When you search for businesses, your zipcode (converted to coordinates) is sent to Foursquare to find nearby businesses. Foursquare's use of this data is governed by their privacy policy.</p>
         </div>
 
         <div class="info-card" style="margin-top: 2rem;">
@@ -190,13 +165,32 @@
         </div>
 
         <div class="info-card" style="margin-top: 2rem;">
-          <h2>12. SMS and Mobile Messaging Terms</h2>
-          <p>When you use BookAPT and opt-in to receive SMS notifications, you agree to our Mobile Terms of Service and Privacy Policy for SMS communications:</p>
+          <h2>12.1 Account Deletion</h2>
+          <p>You have the right to request deletion of your BookAPT account and all associated data at any time. To request account deletion, please visit our <a href="account-deletion.html">Account Deletion Request page</a> or contact us at <a href="mailto:info@orynsolutions.io">info@orynsolutions.io</a>.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>12. SMS Communications and Consent</h2>
+          <div style="background: #f0f7ff; border-left: 4px solid #0066cc; padding: 1rem; margin-top: 1rem; border-radius: 4px;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>By providing your phone number and creating an account, you explicitly consent to receive SMS messages from BookAPT, including:</strong></p>
+            <ul style="margin: 0.5rem 0 0 1.5rem;">
+              <li>Appointment confirmations</li>
+              <li>Appointment reminders</li>
+              <li>Cancellation notices</li>
+              <li>Payment confirmations</li>
+              <li>Service updates</li>
+              <li>Account notifications</li>
+            </ul>
+          </div>
+
+          <h3 style="margin-top: 1.5rem;">Opt-Out Rights</h3>
+          <p>You may opt-out of SMS notifications at any time by:</p>
           <ul>
-            <li><strong>Mobile Terms of Service:</strong> <a href="https://bookaptio.web.app/terms.html" target="_blank" rel="noopener noreferrer">https://bookaptio.web.app/terms.html</a></li>
-            <li><strong>Privacy Policy (SMS/Mobile):</strong> <a href="https://bookaptio.web.app/privacy.html" target="_blank" rel="noopener noreferrer">https://bookaptio.web.app/privacy.html</a></li>
+            <li>Replying "STOP" to any SMS message</li>
+            <li>Toggling SMS notifications OFF in Profile Settings</li>
+            <li>Contacting customer support</li>
           </ul>
-          <p>By providing your phone number and opting in to SMS notifications, you consent to receive appointment confirmations, reminders, and service updates via text message. Message and data rates may apply. Reply HELP for help or STOP to opt out at any time.</p>
+          <p><strong>Message and data rates may apply.</strong> Standard messaging charges from your carrier apply.</p>
         </div>
 
         <div class="info-card" style="margin-top: 2rem;">
