@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service | ORYN Inc.</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/ORYN_Logo_Web_Assets/oryn_logo_vertical_32.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="brand" href="index.html">
+        <img class="brand-logo" src="assets/ORYN_Logo_Web_Assets/oryn_logo_vertical_128.png" alt="Oryn logo">
+        <span class="brand-text">
+          <span class="tagline">Transforming ideas into intelligent solutions</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="software.html">Software &amp; Mobile Apps</a>
+        <a href="consulting.html">Consulting Services</a>
+        <a href="project-management.html">Project Management</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="support.html">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="container">
+        <span class="eyebrow">Legal</span>
+        <h1>Terms of Service</h1>
+        <p><strong>BookAPT Mobile Application</strong> - Developed by HamedMohammed / ORYN Inc</p>
+        <p>Last Updated: <span id="lastUpdated"></span></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="info-card">
+          <h2>1. Introduction</h2>
+          <p>These Terms of Service ("Terms") govern your access to and use of <strong>BookAPT</strong>, a mobile application and web platform ("App", "Service", "BookAPT") developed by <strong>HamedMohammed</strong> and operated by <strong>ORYN Inc.</strong> ("we," "our," or "us").</p>
+          <p>By accessing or using BookAPT, you agree to be bound by these Terms. If you do not agree to these Terms, you may not access or use the Service.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>2. SMS and Mobile Messaging Terms</h2>
+          <p>When you use BookAPT and opt-in to receive SMS notifications, you agree to our Mobile Terms of Service and Privacy Policy for SMS communications:</p>
+          <ul>
+            <li><strong>Mobile Terms of Service:</strong> <a href="https://bookaptio.web.app/terms.html" target="_blank" rel="noopener noreferrer">https://bookaptio.web.app/terms.html</a></li>
+            <li><strong>Privacy Policy (SMS/Mobile):</strong> <a href="https://bookaptio.web.app/privacy.html" target="_blank" rel="noopener noreferrer">https://bookaptio.web.app/privacy.html</a></li>
+          </ul>
+          <p>By providing your phone number and opting in to SMS notifications, you consent to receive appointment confirmations, reminders, and service updates via text message. Message and data rates may apply. Reply HELP for help or STOP to opt out at any time.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>3. Acceptance of Terms</h2>
+          <p>By creating an account, downloading, installing, or using BookAPT, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>4. Description of Service</h2>
+          <p>BookAPT is a smart appointment booking platform that connects customers with businesses for scheduling appointments across various industries including personal services, healthcare, automotive, professional services, and more.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>5. User Accounts</h2>
+          <p>To use BookAPT, you must create an account by providing accurate, current, and complete information. You are responsible for maintaining the security of your account and password.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>6. User Responsibilities</h2>
+          <p>You agree to:</p>
+          <ul>
+            <li>Use BookAPT only for lawful purposes</li>
+            <li>Provide accurate information</li>
+            <li>Maintain the security of your account</li>
+            <li>Not interfere with or disrupt the Service</li>
+            <li>Comply with all applicable laws and regulations</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>7. Privacy Policy</h2>
+          <p>Your use of BookAPT is also governed by our <a href="privacy-policy.html">Privacy Policy</a>, which explains how we collect, use, and protect your information.</p>
+        </div>
+
+        <div class="info-card" style="margin-top: 2rem;">
+          <h2>8. Contact Us</h2>
+          <p>If you have any questions about these Terms of Service, please contact us:</p>
+          <ul>
+            <li><strong>App Name:</strong> BookAPT</li>
+            <li><strong>Developer:</strong> HamedMohammed</li>
+            <li><strong>Company:</strong> ORYN Inc.</li>
+            <li><strong>Email:</strong> <a href="mailto:info@orynsolutions.io">info@orynsolutions.io</a></li>
+            <li><strong>Support:</strong> <a href="support.html">Visit our Support page</a></li>
+            <li><strong>Website:</strong> <a href="https://orynsolutions.io">orynsolutions.io</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> ORYN Inc. All rights reserved. | <a href="privacy-policy.html" style="color: rgba(255, 255, 255, 0.72);">Privacy Policy</a> | <a href="support.html" style="color: rgba(255, 255, 255, 0.72);">Support</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+    if (lastUpdatedEl) {
+      lastUpdatedEl.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+  </script>
+</body>
+</html>
+
