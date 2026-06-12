@@ -7,6 +7,7 @@ import { AdminGuard } from "@/components/AdminGuard";
 import { ContractDetail } from "@/components/ContractDetail";
 import { PdfViewer } from "@/components/PdfViewer";
 import { api } from "@/lib/api";
+import { resolveRouteParam } from "@/lib/routeParams";
 import type {
   Contract,
   ContractAcceptance,
@@ -17,7 +18,7 @@ import type {
 export default function ContractDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const contractId = String(params.contractId);
+  const contractId = resolveRouteParam(params.contractId, 2);
   const [contract, setContract] = useState<Contract | null>(null);
   const [acceptance, setAcceptance] = useState<ContractAcceptance | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);

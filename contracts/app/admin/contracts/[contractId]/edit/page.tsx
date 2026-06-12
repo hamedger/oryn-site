@@ -7,12 +7,13 @@ import { AdminGuard } from "@/components/AdminGuard";
 import { ContractForm } from "@/components/ContractForm";
 import { ContractPreview } from "@/components/ContractPreview";
 import { api } from "@/lib/api";
+import { resolveRouteParam } from "@/lib/routeParams";
 import type { Contract, ContractFormData } from "@/lib/types";
 
 export default function EditContractPage() {
   const params = useParams();
   const router = useRouter();
-  const contractId = String(params.contractId);
+  const contractId = resolveRouteParam(params.contractId, 2);
   const [contract, setContract] = useState<Contract | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

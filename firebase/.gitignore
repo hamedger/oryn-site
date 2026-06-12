@@ -1,6 +1,7 @@
 .firebase/
 functions/lib/
 functions/node_modules/
+hosting/
 *.log
 .env
 .env.local

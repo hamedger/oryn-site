@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading…</title>
+    <script>
+      (function () {
+        var path = location.pathname;
+        var search = location.search;
+        var hash = location.hash;
+        var target = null;
+
+        if (/^\/admin\/contracts\/[^/]+\/edit\/?$/.test(path)) {
+          target = "/admin/contracts/_/edit/";
+        } else if (/^\/admin\/contracts\/[^/]+\/renew\/?$/.test(path)) {
+          target = "/admin/contracts/_/renew/";
+        } else if (/^\/admin\/contracts\/[^/]+\/?$/.test(path)) {
+          target = "/admin/contracts/_/";
+        } else if (/^\/sign\/[^/]+\/?$/.test(path)) {
+          target = "/sign/_/";
+        }
+
+        if (target) {
+          sessionStorage.setItem("oryn-spa-path", path);
+          location.replace(target + search + hash);
+          return;
+        }
+
+        location.replace("/");
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

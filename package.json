@@ -1,0 +1,9 @@
+{
+  "name": "oryn-site",
+  "private": true,
+  "scripts": {
+    "deploy": "cd firebase && firebase deploy",
+    "deploy:hosting": "cd firebase && firebase deploy --only hosting",
+    "deploy:functions": "cd firebase && firebase deploy --only functions"
+  }
+}

@@ -21,12 +21,35 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "../contracts/out",
+    "public": "hosting",
+    "predeploy": [
+      "npm --prefix \"../contracts\" run build",
+      "rm -rf hosting",
+      "cp -r ../contracts/out hosting"
+    ],
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/admin/contracts/**/edit",
+        "destination": "/admin/contracts/_/edit/index.html"
+      },
+      {
+        "source": "/admin/contracts/**/renew",
+        "destination": "/admin/contracts/_/renew/index.html"
+      },
+      {
+        "source": "/admin/contracts/**",
+        "destination": "/admin/contracts/_/index.html"
+      },
+      {
+        "source": "/sign/**",
+        "destination": "/sign/_/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
       }
     ]
   },

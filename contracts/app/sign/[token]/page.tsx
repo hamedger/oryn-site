@@ -4,11 +4,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SignaturePad } from "@/components/SignaturePad";
 import { api } from "@/lib/api";
+import { resolveRouteParam } from "@/lib/routeParams";
 import type { PublicContractView } from "@/lib/types";
 
 export default function SignContractPage() {
   const params = useParams();
-  const token = String(params.token);
+  const token = resolveRouteParam(params.token, 1);
   const [contract, setContract] = useState<PublicContractView | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
