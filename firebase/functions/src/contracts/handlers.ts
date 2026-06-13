@@ -1,4 +1,4 @@
-import { getFirestore, FieldValue, Query } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { HttpsError } from "firebase-functions/v2/https";
 import {
   renderContractText,
@@ -488,19 +488,29 @@ export async function handleAcceptContract(
 export async function handleListContracts(
   filters: { status?: string; search?: string } = {}
 ): Promise<{ contracts: Record<string, unknown>[] }> {
-  let query: Query = db()
+  const snap = await db()
     .collection("contracts")
-    .orderBy("createdAt", "desc");
+    .orderBy("createdAt", "desc")
+    .limit(200)
+    .get();
+
+  let contracts = snap.docs.map((d) => serializeContract(d.data(), d.id));
 
   if (filters.status && filters.status !== "all") {
-    query = db()
-      .collection("contracts")
-      .where("status", "==", filters.status)
-      .orderBy("createdAt", "desc");
+    if (filters.status === "awaiting_signature") {
+      contracts = contracts.filter((c) => {
+        const status = String(c.status);
+        return (
+          Boolean(c.sentAt) &&
+          status !== "signed" &&
+          status !== "cancelled" &&
+          status !== "draft"
+        );
+      });
+    } else {
+      contracts = contracts.filter((c) => c.status === filters.status);
+    }
   }
-
-  const snap = await query.limit(200).get();
-  let contracts = snap.docs.map((d) => serializeContract(d.data(), d.id));
 
   if (filters.search?.trim()) {
     const term = filters.search.trim().toLowerCase();
@@ -746,4 +756,99 @@ export async function handlePreviewContract(
     contractText,
     contractTextHtml: contractTextToHtml(contractText),
   };
+}
+
+function serializeTemplate(
+  data: FirebaseFirestore.DocumentData,
+  id: string
+): Record<string, unknown> {
+  return {
+    id,
+    name: data.name,
+    description: data.description || "",
+    projectDescription: data.projectDescription || "",
+    onboardingFee: data.onboardingFee ?? 0,
+    monthlyFee: data.monthlyFee ?? 0,
+    termMonths: data.termMonths ?? null,
+    customTerms: data.customTerms || "",
+    onboardingFeePaymentLink: data.onboardingFeePaymentLink || "",
+    adminOverrideAllowDifferentSignerEmail:
+      data.adminOverrideAllowDifferentSignerEmail ?? false,
+    createdAt: timestampToIso(data.createdAt),
+    updatedAt: timestampToIso(data.updatedAt),
+    createdBy: data.createdBy,
+  };
+}
+
+function normalizeTemplateInput(raw: Record<string, unknown>) {
+  const name = sanitizePlainText(String(raw.name || ""));
+  if (!name) throw new HttpsError("invalid-argument", "Template name is required.");
+
+  return {
+    name,
+    description: sanitizePlainText(String(raw.description || "")),
+    projectDescription: sanitizePlainText(String(raw.projectDescription || "")),
+    onboardingFee: Number(raw.onboardingFee) || 0,
+    monthlyFee: Number(raw.monthlyFee) || 0,
+    termMonths: parseTermMonths(raw.termMonths),
+    customTerms: sanitizePlainText(String(raw.customTerms || "")),
+    onboardingFeePaymentLink: String(raw.onboardingFeePaymentLink || "").trim(),
+    adminOverrideAllowDifferentSignerEmail: Boolean(
+      raw.adminOverrideAllowDifferentSignerEmail
+    ),
+  };
+}
+
+export async function handleListContractTemplates(): Promise<{
+  templates: Record<string, unknown>[];
+}> {
+  const snap = await db()
+    .collection("contractTemplates")
+    .orderBy("name", "asc")
+    .get();
+  return {
+    templates: snap.docs.map((d) => serializeTemplate(d.data(), d.id)),
+  };
+}
+
+export async function handleSaveContractTemplate(
+  raw: Record<string, unknown>,
+  admin: { email: string }
+): Promise<{ templateId: string; template: Record<string, unknown> }> {
+  const input = normalizeTemplateInput(raw);
+  const templateId = raw.templateId
+    ? String(raw.templateId)
+    : db().collection("contractTemplates").doc().id;
+  const ref = db().collection("contractTemplates").doc(templateId);
+  const existing = await ref.get();
+  const now = FieldValue.serverTimestamp();
+
+  await ref.set(
+    {
+      ...input,
+      createdAt: existing.exists ? existing.data()?.createdAt ?? now : now,
+      updatedAt: now,
+      createdBy: existing.exists
+        ? existing.data()?.createdBy ?? admin.email
+        : admin.email,
+    },
+    { merge: true }
+  );
+
+  const saved = await ref.get();
+  return {
+    templateId,
+    template: serializeTemplate(saved.data()!, templateId),
+  };
+}
+
+export async function handleDeleteContractTemplate(
+  templateId: string
+): Promise<{ success: boolean }> {
+  if (!templateId) throw new HttpsError("invalid-argument", "templateId required");
+  const ref = db().collection("contractTemplates").doc(templateId);
+  const snap = await ref.get();
+  if (!snap.exists) throw new HttpsError("not-found", "Template not found.");
+  await ref.delete();
+  return { success: true };
 }

@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import type {
   Contract,
   ContractAcceptance,
   AuditLog,
   EmailRecord,
 } from "@/lib/types";
+import { contractTextToHtml } from "@/lib/contractTemplate";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
+import { ContractPreview } from "./ContractPreview";
 import { SignedContractSummary } from "./SignedContractSummary";
 import { AuditTimeline } from "./AuditTimeline";
 
@@ -40,6 +43,7 @@ export function ContractDetail({
   onAction,
   busy,
 }: Props) {
+  const [showContractText, setShowContractText] = useState(false);
   const isSigned = contract.status === "signed";
   const isDraft = contract.status === "draft";
   const canCancel = !isSigned && contract.status !== "cancelled";
@@ -94,6 +98,27 @@ export function ContractDetail({
           )}
         </dl>
       </section>
+
+      {contract.contractText && (
+        <section className="card">
+          <h2>Statement of Work</h2>
+          <p className="muted">Full contract text sent to the client.</p>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowContractText(true)}
+          >
+            View Contract Text
+          </button>
+        </section>
+      )}
+
+      {showContractText && (
+        <ContractPreview
+          html={contractTextToHtml(contract.contractText)}
+          onClose={() => setShowContractText(false)}
+        />
+      )}
 
       {isSigned && acceptance && (
         <SignedContractSummary

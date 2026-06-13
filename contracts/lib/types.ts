@@ -16,6 +16,29 @@ export type EmailType =
 
 export type EmailStatus = "pending" | "sent" | "failed";
 
+export type ContractListFilter = ContractStatus | "all" | "awaiting_signature";
+
+export interface ContractTemplate {
+  id: string;
+  name: string;
+  description: string;
+  projectDescription: string;
+  onboardingFee: number;
+  monthlyFee: number;
+  termMonths: number | null;
+  customTerms: string;
+  onboardingFeePaymentLink: string;
+  adminOverrideAllowDifferentSignerEmail: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+export type ContractTemplateFormData = Omit<
+  ContractTemplate,
+  "id" | "createdAt" | "updatedAt" | "createdBy"
+>;
+
 export interface Contract {
   id: string;
   clientName: string;

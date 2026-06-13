@@ -24,6 +24,7 @@ const emptyForm: ContractFormData = {
 
 interface Props {
   initial?: Partial<ContractFormData>;
+  onChange?: (data: ContractFormData) => void;
   onSubmit?: (data: ContractFormData) => void;
   onPreview?: (data: ContractFormData) => void;
   onGenerateSend?: (data: ContractFormData) => void;
@@ -35,6 +36,7 @@ interface Props {
 
 export function ContractForm({
   initial,
+  onChange,
   onSubmit,
   onPreview,
   onGenerateSend,
@@ -56,19 +58,45 @@ export function ContractForm({
     return 12;
   });
 
+  function emitChange(
+    next: ContractFormData,
+    nextTermSelect = termSelect,
+    nextCustomMonths = customTermMonths
+  ) {
+    onChange?.({
+      ...next,
+      termMonths: selectValueToTermMonths(nextTermSelect, nextCustomMonths),
+    });
+  }
+
   function update(field: keyof ContractFormData, value: string | number | boolean | null) {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      emitChange(next);
+      return next;
+    });
   }
 
   function updateTermSelect(value: string) {
     setTermSelect(value);
-    update("termMonths", selectValueToTermMonths(value, customTermMonths));
+    setForm((prev) => {
+      const next = {
+        ...prev,
+        termMonths: selectValueToTermMonths(value, customTermMonths),
+      };
+      emitChange(next, value);
+      return next;
+    });
   }
 
   function updateCustomTermMonths(months: number) {
     setCustomTermMonths(months);
     if (termSelect === "custom") {
-      update("termMonths", months >= 1 ? months : 1);
+      setForm((prev) => {
+        const next = { ...prev, termMonths: months >= 1 ? months : 1 };
+        emitChange(next, termSelect, months);
+        return next;
+      });
     }
   }
 

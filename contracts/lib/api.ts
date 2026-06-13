@@ -8,6 +8,8 @@ import type {
   EmailRecord,
   PublicContractView,
   SignedContractSummaryData,
+  ContractTemplate,
+  ContractTemplateFormData,
 } from "./types";
 
 async function call<TReq, TRes>(
@@ -125,6 +127,20 @@ export const api = {
       "previewContract",
       data
     ),
+
+  listContractTemplates: () =>
+    call<undefined, { templates: ContractTemplate[] }>("listContractTemplates"),
+
+  saveContractTemplate: (data: ContractTemplateFormData & { templateId?: string }) =>
+    call<typeof data, { templateId: string; template: ContractTemplate }>(
+      "saveContractTemplate",
+      data
+    ),
+
+  deleteContractTemplate: (templateId: string) =>
+    call<{ templateId: string }, { success: boolean }>("deleteContractTemplate", {
+      templateId,
+    }),
 };
 
 export type { SignedContractSummaryData };

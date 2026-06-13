@@ -49,7 +49,7 @@ export function getClientAuth(): Auth {
 
 export function getFirebaseFunctions(): Functions {
   if (!functions) {
-    functions = getFunctions(getApp());
+    functions = getFunctions(getApp(), "us-central1");
     if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true") {
       connectFunctionsEmulator(functions, "127.0.0.1", 5001);
     }

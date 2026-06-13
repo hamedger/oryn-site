@@ -6,14 +6,56 @@ import { useState } from "react";
 import { AdminGuard } from "@/components/AdminGuard";
 import { ContractForm } from "@/components/ContractForm";
 import { ContractPreview } from "@/components/ContractPreview";
+import { ContractTemplatePanel } from "@/components/ContractTemplatePanel";
 import { api } from "@/lib/api";
 import type { ContractFormData } from "@/lib/types";
+
+const emptyClientFields: ContractFormData = {
+  clientName: "",
+  clientAddress: "",
+  clientEmail: "",
+  projectDescription: "",
+  onboardingFee: 0,
+  monthlyFee: 0,
+  termMonths: 12,
+  startDate: new Date().toISOString().slice(0, 10),
+  customTerms: "",
+  onboardingFeePaymentLink: "",
+  adminOverrideAllowDifferentSignerEmail: false,
+};
 
 export default function NewContractPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [formSeed, setFormSeed] = useState<ContractFormData>(emptyClientFields);
+  const [formKey, setFormKey] = useState(0);
+  const [draftForm, setDraftForm] = useState<ContractFormData>(emptyClientFields);
+
+  function applyTemplate(fields: Partial<ContractFormData>) {
+    const next = {
+      ...emptyClientFields,
+      ...fields,
+      clientName: formSeed.clientName,
+      clientAddress: formSeed.clientAddress,
+      clientEmail: formSeed.clientEmail,
+      startDate: new Date().toISOString().slice(0, 10),
+    };
+    setFormSeed(next);
+    setDraftForm(next);
+    setFormKey((k) => k + 1);
+  }
+
+  function syncDraftForm(data: ContractFormData) {
+    setDraftForm(data);
+    setFormSeed((prev) => ({
+      ...data,
+      clientName: data.clientName || prev.clientName,
+      clientAddress: data.clientAddress || prev.clientAddress,
+      clientEmail: data.clientEmail || prev.clientEmail,
+    }));
+  }
 
   async function handlePreview(data: ContractFormData) {
     try {
@@ -68,8 +110,12 @@ export default function NewContractPage() {
           </Link>
         </div>
         {error && <div className="alert alert-error">{error}</div>}
+        <ContractTemplatePanel formData={draftForm} onApply={applyTemplate} />
         <section className="card">
           <ContractForm
+            key={formKey}
+            initial={formSeed}
+            onChange={syncDraftForm}
             onPreview={handlePreview}
             onSubmit={saveDraft}
             onGenerateSend={generateAndSend}

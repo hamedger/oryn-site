@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import type { Contract, ContractStatus } from "@/lib/types";
+import type { Contract, ContractListFilter } from "@/lib/types";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
 
-const FILTERS: Array<{ label: string; value: ContractStatus | "all" }> = [
+const FILTERS: Array<{ label: string; value: ContractListFilter }> = [
   { label: "All", value: "all" },
   { label: "Draft", value: "draft" },
-  { label: "Sent", value: "sent" },
+  { label: "Awaiting Signature", value: "awaiting_signature" },
+  { label: "Sent (unopened)", value: "sent" },
   { label: "Viewed", value: "viewed" },
   { label: "Signed", value: "signed" },
   { label: "Expired", value: "expired" },
@@ -33,12 +34,13 @@ function fmtMoney(n: number) {
 
 interface Props {
   contracts: Contract[];
-  filter: ContractStatus | "all";
+  filter: ContractListFilter;
   search: string;
-  onFilterChange: (v: ContractStatus | "all") => void;
+  onFilterChange: (v: ContractListFilter) => void;
   onSearchChange: (v: string) => void;
   onAction: (action: string, contractId: string) => void;
   loading?: boolean;
+  error?: string;
 }
 
 export function AdminContractList({
@@ -49,6 +51,7 @@ export function AdminContractList({
   onSearchChange,
   onAction,
   loading,
+  error,
 }: Props) {
   return (
     <div className="admin-list">
@@ -74,10 +77,16 @@ export function AdminContractList({
         </div>
       </div>
 
+      {error && <div className="alert alert-error">{error}</div>}
+
       {loading ? (
         <p className="muted">Loading contracts…</p>
       ) : contracts.length === 0 ? (
-        <p className="muted">No contracts found.</p>
+        <p className="muted">
+          {filter === "awaiting_signature"
+            ? "No contracts awaiting signature. Sent contracts move to Viewed once the signing link is opened."
+            : "No contracts found."}
+        </p>
       ) : (
         <div className="table-wrap">
           <table className="data-table">

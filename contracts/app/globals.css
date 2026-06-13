@@ -412,6 +412,22 @@ a { color: var(--color-primary); }
   margin: 4rem auto;
 }
 
+.template-panel h2 {
+  margin-top: 0;
+}
+
+.template-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.template-select {
+  min-width: min(320px, 100%);
+  flex: 1;
+}
+
 .password-field {
   position: relative;
   display: flex;

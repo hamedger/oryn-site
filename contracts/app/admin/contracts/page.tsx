@@ -8,7 +8,7 @@ import { AdminContractList } from "@/components/AdminContractList";
 import { ContractPreview } from "@/components/ContractPreview";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
-import type { Contract, ContractStatus } from "@/lib/types";
+import type { Contract, ContractListFilter } from "@/lib/types";
 import { renderContractText, contractTextToHtml } from "@/lib/contractTemplate";
 
 function AdminHeader() {
@@ -33,13 +33,15 @@ function AdminHeader() {
 export default function AdminContractsPage() {
   const router = useRouter();
   const [contracts, setContracts] = useState<Contract[]>([]);
-  const [filter, setFilter] = useState<ContractStatus | "all">("all");
+  const [filter, setFilter] = useState<ContractListFilter>("awaiting_signature");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [listError, setListError] = useState("");
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setListError("");
     try {
       const res = await api.listContracts({
         status: filter === "all" ? undefined : filter,
@@ -48,6 +50,8 @@ export default function AdminContractsPage() {
       setContracts(res.contracts as Contract[]);
     } catch (err) {
       console.error(err);
+      setListError(err instanceof Error ? err.message : "Failed to load contracts");
+      setContracts([]);
     } finally {
       setLoading(false);
     }
@@ -129,6 +133,7 @@ export default function AdminContractsPage() {
           onSearchChange={setSearch}
           onAction={handleAction}
           loading={loading}
+          error={listError}
         />
         {previewHtml && (
           <ContractPreview html={previewHtml} onClose={() => setPreviewHtml(null)} />
