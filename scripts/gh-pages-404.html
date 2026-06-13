@@ -10,18 +10,35 @@
         var hash = location.hash;
         var target = null;
 
-        if (/^\/admin\/contracts\/[^/]+\/edit\/?$/.test(path)) {
-          target = "/admin/contracts/_/edit/";
-        } else if (/^\/admin\/contracts\/[^/]+\/renew\/?$/.test(path)) {
-          target = "/admin/contracts/_/renew/";
-        } else if (/^\/admin\/contracts\/[^/]+\/?$/.test(path)) {
-          target = "/admin/contracts/_/";
-        } else if (/^\/sign\/[^/]+\/?$/.test(path)) {
+        function contractIdFromPath(re) {
+          var match = path.match(re);
+          return match && match[1] !== "_" ? match[1] : null;
+        }
+
+        var editId = contractIdFromPath(/^\/admin\/contracts\/([^/]+)\/edit\/?$/);
+        if (editId) {
+          target = "/admin/contracts/_/edit/?id=" + encodeURIComponent(editId);
+        }
+
+        var renewId = contractIdFromPath(/^\/admin\/contracts\/([^/]+)\/renew\/?$/);
+        if (!target && renewId) {
+          target = "/admin/contracts/_/renew/?id=" + encodeURIComponent(renewId);
+        }
+
+        var detailId = contractIdFromPath(/^\/admin\/contracts\/([^/]+)\/?$/);
+        if (!target && detailId) {
+          target = "/admin/contracts/_/?id=" + encodeURIComponent(detailId);
+        }
+
+        if (!target && /^\/sign\/([^/]+)\/?$/.test(path)) {
+          var signMatch = path.match(/^\/sign\/([^/]+)\/?$/);
+          if (signMatch && signMatch[1] !== "_") {
+            sessionStorage.setItem("oryn-spa-path", path);
+          }
           target = "/sign/_/";
         }
 
         if (target) {
-          sessionStorage.setItem("oryn-spa-path", path);
           location.replace(target + search + hash);
           return;
         }

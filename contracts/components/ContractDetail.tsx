@@ -8,6 +8,7 @@ import type {
   AuditLog,
   EmailRecord,
 } from "@/lib/types";
+import { contractDetailHref, contractEditHref, contractRenewHref } from "@/lib/contractRoutes";
 import { contractTextToHtml } from "@/lib/contractTemplate";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
@@ -90,7 +91,7 @@ export function ContractDetail({
             <div className="full-width">
               <dt>Renewed from</dt>
               <dd>
-                <Link href={`/admin/contracts/${contract.originalContractId}`}>
+                <Link href={contractDetailHref(contract.originalContractId)}>
                   {contract.originalContractId}
                 </Link>
               </dd>
@@ -149,7 +150,7 @@ export function ContractDetail({
               <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => onAction("email-admin")}>
                 Email Copy to Admin
               </button>
-              <Link href={`/admin/contracts/${contract.id}/renew`} className="btn btn-secondary">
+              <Link href={contractRenewHref(contract.id)} className="btn btn-secondary">
                 Renew Contract
               </Link>
             </>
@@ -165,7 +166,7 @@ export function ContractDetail({
             </button>
           )}
           {isDraft && (
-            <Link href={`/admin/contracts/${contract.id}/edit`} className="btn btn-secondary">
+            <Link href={contractEditHref(contract.id)} className="btn btn-secondary">
               Edit Draft
             </Link>
           )}

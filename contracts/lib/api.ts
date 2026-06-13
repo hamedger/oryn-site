@@ -1,5 +1,6 @@
+import { FirebaseError } from "firebase/app";
 import { httpsCallable, HttpsCallableResult } from "firebase/functions";
-import { getFirebaseFunctions } from "./firebase";
+import { getClientAuth, getFirebaseFunctions } from "./firebase";
 import type {
   Contract,
   ContractFormData,
@@ -12,13 +13,46 @@ import type {
   ContractTemplateFormData,
 } from "./types";
 
+async function ensureAuthToken(forceRefresh = false): Promise<void> {
+  const user = getClientAuth().currentUser;
+  if (!user) {
+    throw new Error("Authentication required. Please sign in again.");
+  }
+  await user.getIdToken(forceRefresh);
+}
+
+function isUnauthenticatedError(err: unknown): boolean {
+  return (
+    err instanceof FirebaseError &&
+    (err.code === "functions/unauthenticated" || err.code === "unauthenticated")
+  );
+}
+
 async function call<TReq, TRes>(
   name: string,
-  data?: TReq
+  data?: TReq,
+  options?: { requireAuth?: boolean }
 ): Promise<TRes> {
+  if (options?.requireAuth) {
+    await ensureAuthToken();
+  }
+
   const fn = httpsCallable<TReq, TRes>(getFirebaseFunctions(), name);
-  const result: HttpsCallableResult<TRes> = await fn(data as TReq);
-  return result.data;
+  try {
+    const result: HttpsCallableResult<TRes> = await fn(data as TReq);
+    return result.data;
+  } catch (err) {
+    if (options?.requireAuth && isUnauthenticatedError(err)) {
+      await ensureAuthToken(true);
+      const retry: HttpsCallableResult<TRes> = await fn(data as TReq);
+      return retry.data;
+    }
+    throw err;
+  }
+}
+
+async function adminCall<TReq, TRes>(name: string, data?: TReq): Promise<TRes> {
+  return call<TReq, TRes>(name, data, { requireAuth: true });
 }
 
 export interface CreateContractResponse {
@@ -41,21 +75,21 @@ export interface AcceptContractPayload {
 
 export const api = {
   createContract: (data: ContractFormData & { send?: boolean }) =>
-    call<typeof data, CreateContractResponse>("createContract", data),
+    adminCall<typeof data, CreateContractResponse>("createContract", data),
 
   updateDraftContract: (
     contractId: string,
     data: Partial<ContractFormData>
   ) =>
-    call("updateDraftContract", { contractId, ...data }),
+    adminCall("updateDraftContract", { contractId, ...data }),
 
   sendContractEmail: (contractId: string) =>
-    call<{ contractId: string }, SendContractResponse>("sendContractEmail", {
+    adminCall<{ contractId: string }, SendContractResponse>("sendContractEmail", {
       contractId,
     }),
 
   resendContractEmail: (contractId: string) =>
-    call<{ contractId: string }, SendContractResponse>("resendContractEmail", {
+    adminCall<{ contractId: string }, SendContractResponse>("resendContractEmail", {
       contractId,
     }),
 
@@ -71,10 +105,10 @@ export const api = {
     ),
 
   listContracts: (filters?: { status?: string; search?: string }) =>
-    call<typeof filters, { contracts: Contract[] }>("listContracts", filters),
+    adminCall<typeof filters, { contracts: Contract[] }>("listContracts", filters),
 
   getContractDetail: (contractId: string) =>
-    call<
+    adminCall<
       { contractId: string },
       {
         contract: Contract;
@@ -89,7 +123,7 @@ export const api = {
     contractId: string,
     type: "unsigned" | "signed"
   ) =>
-    call<
+    adminCall<
       { contractId: string; type: "unsigned" | "signed" },
       { url: string }
     >("getSignedPdfDownloadUrl", { contractId, type }),
@@ -98,7 +132,7 @@ export const api = {
     contractId: string,
     recipient: "client" | "admin"
   ) =>
-    call<
+    adminCall<
       { contractId: string; recipient: "client" | "admin" },
       { success: boolean }
     >("emailSignedCopy", { contractId, recipient }),
@@ -112,33 +146,33 @@ export const api = {
       >
     >
   ) =>
-    call<
+    adminCall<
       Record<string, unknown>,
       { contractId: string; contract: Contract }
     >("renewContract", { contractId, ...updates }),
 
   cancelContract: (contractId: string) =>
-    call<{ contractId: string }, { success: boolean }>("cancelContract", {
+    adminCall<{ contractId: string }, { success: boolean }>("cancelContract", {
       contractId,
     }),
 
   previewContract: (data: ContractFormData) =>
-    call<ContractFormData, { contractText: string; contractTextHtml: string }>(
+    adminCall<ContractFormData, { contractText: string; contractTextHtml: string }>(
       "previewContract",
       data
     ),
 
   listContractTemplates: () =>
-    call<undefined, { templates: ContractTemplate[] }>("listContractTemplates"),
+    adminCall<undefined, { templates: ContractTemplate[] }>("listContractTemplates"),
 
   saveContractTemplate: (data: ContractTemplateFormData & { templateId?: string }) =>
-    call<typeof data, { templateId: string; template: ContractTemplate }>(
+    adminCall<typeof data, { templateId: string; template: ContractTemplate }>(
       "saveContractTemplate",
       data
     ),
 
   deleteContractTemplate: (templateId: string) =>
-    call<{ templateId: string }, { success: boolean }>("deleteContractTemplate", {
+    adminCall<{ templateId: string }, { success: boolean }>("deleteContractTemplate", {
       templateId,
     }),
 };

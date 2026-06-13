@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AdminGuard } from "@/components/AdminGuard";
 import { AdminContractList } from "@/components/AdminContractList";
+import { ContractDetailModal } from "@/components/ContractDetailModal";
 import { ContractPreview } from "@/components/ContractPreview";
-import { useAuth } from "@/lib/auth-context";
+import { contractRenewHref } from "@/lib/contractRoutes";
+import { useAuth, useAuthReady } from "@/lib/auth-context";
 import { api } from "@/lib/api";
 import type { Contract, ContractListFilter } from "@/lib/types";
 import { renderContractText, contractTextToHtml } from "@/lib/contractTemplate";
@@ -31,13 +32,15 @@ function AdminHeader() {
 }
 
 export default function AdminContractsPage() {
-  const router = useRouter();
+  const authReady = useAuthReady();
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [filter, setFilter] = useState<ContractListFilter>("awaiting_signature");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState("");
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [detailContractId, setDetailContractId] = useState<string | null>(null);
+  const [detailListContract, setDetailListContract] = useState<Contract | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -58,12 +61,29 @@ export default function AdminContractsPage() {
   }, [filter, search]);
 
   useEffect(() => {
+    if (!authReady) return;
     const t = setTimeout(load, search ? 300 : 0);
     return () => clearTimeout(t);
-  }, [load, search]);
+  }, [authReady, load, search]);
+
+  useEffect(() => {
+    if (!authReady || loading || typeof window === "undefined") return;
+    const id = new URLSearchParams(window.location.search).get("detail")?.trim();
+    if (!id) return;
+    const row = contracts.find((c) => c.id === id) ?? null;
+    setDetailListContract(row);
+    setDetailContractId(id);
+    window.history.replaceState({}, "", "/admin/contracts/");
+  }, [authReady, loading, contracts]);
 
   async function handleAction(action: string, contractId: string) {
     try {
+      if (action === "details") {
+        const row = contracts.find((c) => c.id === contractId) ?? null;
+        setDetailListContract(row);
+        setDetailContractId(contractId);
+        return;
+      }
       if (action === "send" || action === "resend") {
         if (action === "resend") {
           await api.resendContractEmail(contractId);
@@ -85,7 +105,7 @@ export default function AdminContractsPage() {
         return;
       }
       if (action === "renew") {
-        router.push(`/admin/contracts/${contractId}/renew`);
+        window.location.href = contractRenewHref(contractId);
         return;
       }
       if (action === "cancel") {
@@ -137,6 +157,17 @@ export default function AdminContractsPage() {
         />
         {previewHtml && (
           <ContractPreview html={previewHtml} onClose={() => setPreviewHtml(null)} />
+        )}
+        {detailContractId && (
+          <ContractDetailModal
+            contractId={detailContractId}
+            listContract={detailListContract}
+            onClose={() => {
+              setDetailContractId(null);
+              setDetailListContract(null);
+            }}
+            onRefreshList={load}
+          />
         )}
       </main>
     </AdminGuard>

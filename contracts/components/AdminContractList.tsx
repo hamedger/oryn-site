@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import type { Contract, ContractListFilter } from "@/lib/types";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
@@ -122,13 +121,20 @@ export function AdminContractList({
                   <td>{fmtDate(c.signedAt)}</td>
                   <td>
                     <div className="action-menu">
-                      <Link href={`/admin/contracts/${c.id}`} className="btn btn-ghost btn-sm">
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => onAction("details", c.id)}
+                      >
                         Details
-                      </Link>
+                      </button>
                       {c.status === "draft" && (
-                        <Link href={`/admin/contracts/${c.id}/edit`} className="btn btn-ghost btn-sm">
+                        <a
+                          href={`/admin/contracts/_/edit/?id=${encodeURIComponent(c.id)}`}
+                          className="btn btn-ghost btn-sm"
+                        >
                           Edit
-                        </Link>
+                        </a>
                       )}
                       {c.status !== "signed" && c.status !== "cancelled" && (
                         <button

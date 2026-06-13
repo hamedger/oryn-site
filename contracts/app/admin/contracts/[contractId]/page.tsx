@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { AdminGuard } from "@/components/AdminGuard";
 import { ContractDetail } from "@/components/ContractDetail";
 import { PdfViewer } from "@/components/PdfViewer";
 import { api } from "@/lib/api";
-import { resolveRouteParam } from "@/lib/routeParams";
+import { formatCallableError } from "@/lib/apiErrors";
+import { useAuthReady } from "@/lib/auth-context";
+import { useContractId } from "@/lib/useResolvedRouteParam";
 import type {
   Contract,
   ContractAcceptance,
@@ -17,8 +19,8 @@ import type {
 
 export default function ContractDetailPage() {
   const params = useParams();
-  const router = useRouter();
-  const contractId = resolveRouteParam(params.contractId, 2);
+  const authReady = useAuthReady();
+  const contractId = useContractId(params.contractId);
   const [contract, setContract] = useState<Contract | null>(null);
   const [acceptance, setAcceptance] = useState<ContractAcceptance | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -31,6 +33,7 @@ export default function ContractDetailPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
       const res = await api.getContractDetail(contractId);
       setContract(res.contract as Contract);
@@ -39,15 +42,16 @@ export default function ContractDetailPage() {
       setEmails(res.emails as EmailRecord[]);
       setSignatureImageUrl(res.signatureImageUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load contract");
+      setError(formatCallableError(err));
     } finally {
       setLoading(false);
     }
   }, [contractId]);
 
   useEffect(() => {
+    if (!authReady || !contractId || contractId === "_") return;
     load();
-  }, [load]);
+  }, [authReady, contractId, load]);
 
   async function handleAction(action: string) {
     setBusy(true);
@@ -101,7 +105,7 @@ export default function ContractDetailPage() {
     }
   }
 
-  if (loading) {
+  if (!authReady || loading) {
     return (
       <AdminGuard>
         <main className="container page-center">
@@ -115,7 +119,12 @@ export default function ContractDetailPage() {
     return (
       <AdminGuard>
         <main className="container">
-          <div className="alert alert-error">{error || "Contract not found"}</div>
+          <div className="alert alert-error">
+            {error || "Could not load contract details."}
+          </div>
+          <p className="muted">
+            Contract ID: {contractId || "unknown"}
+          </p>
           <Link href="/admin/contracts" className="btn btn-secondary">
             Back
           </Link>

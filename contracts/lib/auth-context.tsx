@@ -50,3 +50,32 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }
+
+/** True once auth state is known, the user is signed in, and an ID token is available. */
+export function useAuthReady(): boolean {
+  const { user, loading } = useAuth();
+  const [tokenReady, setTokenReady] = useState(false);
+
+  useEffect(() => {
+    if (loading || !user) {
+      setTokenReady(false);
+      return;
+    }
+
+    let cancelled = false;
+    user
+      .getIdToken()
+      .then(() => {
+        if (!cancelled) setTokenReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) setTokenReady(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, loading]);
+
+  return !loading && user !== null && tokenReady;
+}

@@ -7,13 +7,17 @@ import { AdminGuard } from "@/components/AdminGuard";
 import { ContractForm } from "@/components/ContractForm";
 import { ContractPreview } from "@/components/ContractPreview";
 import { api } from "@/lib/api";
-import { resolveRouteParam } from "@/lib/routeParams";
+import { formatCallableError } from "@/lib/apiErrors";
+import { contractDetailHref } from "@/lib/contractRoutes";
+import { useAuthReady } from "@/lib/auth-context";
+import { useContractId } from "@/lib/useResolvedRouteParam";
 import type { Contract, ContractFormData } from "@/lib/types";
 
 export default function EditContractPage() {
   const params = useParams();
   const router = useRouter();
-  const contractId = resolveRouteParam(params.contractId, 2);
+  const authReady = useAuthReady();
+  const contractId = useContractId(params.contractId);
   const [contract, setContract] = useState<Contract | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -21,26 +25,30 @@ export default function EditContractPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!authReady || !contractId || contractId === "_") return;
+
+    setLoading(true);
+    setError("");
     api.getContractDetail(contractId).then((res) => {
       const c = res.contract as Contract;
       if (c.status !== "draft") {
-        router.replace(`/admin/contracts/${contractId}`);
+        router.replace(contractDetailHref(contractId));
         return;
       }
       setContract(c);
       setLoading(false);
     }).catch((err) => {
-      setError(err instanceof Error ? err.message : "Failed to load");
+      setError(formatCallableError(err));
       setLoading(false);
     });
-  }, [contractId, router]);
+  }, [authReady, contractId, router]);
 
   async function handleSave(data: ContractFormData) {
     setSaving(true);
     setError("");
     try {
       await api.updateDraftContract(contractId, data);
-      router.push(`/admin/contracts/${contractId}`);
+      router.push(contractDetailHref(contractId));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -57,7 +65,7 @@ export default function EditContractPage() {
     }
   }
 
-  if (loading) {
+  if (!authReady || loading) {
     return (
       <AdminGuard>
         <main className="container page-center"><p className="muted">Loading…</p></main>
@@ -77,7 +85,7 @@ export default function EditContractPage() {
     <AdminGuard>
       <header className="site-header">
         <div className="header-inner">
-          <Link href={`/admin/contracts/${contractId}`} className="brand">
+          <Link href={contractDetailHref(contractId)} className="brand">
             Oryn Contracts
           </Link>
         </div>
@@ -85,7 +93,7 @@ export default function EditContractPage() {
       <main className="container">
         <div className="page-header">
           <h1>Edit Draft</h1>
-          <Link href={`/admin/contracts/${contractId}`} className="btn btn-ghost">
+          <Link href={contractDetailHref(contractId)} className="btn btn-ghost">
             Cancel
           </Link>
         </div>

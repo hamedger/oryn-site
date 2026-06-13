@@ -71,7 +71,7 @@ export default function NewContractPage() {
     setError("");
     try {
       const res = await api.createContract(data);
-      router.push(`/admin/contracts/${res.contractId}`);
+      router.push(`/admin/contracts/?detail=${encodeURIComponent(res.contractId)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -85,7 +85,7 @@ export default function NewContractPage() {
     setError("");
     try {
       const res = await api.createContract({ ...data, send: true });
-      router.push(`/admin/contracts/${res.contractId}`);
+      router.push(`/admin/contracts/?detail=${encodeURIComponent(res.contractId)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Send failed");
     } finally {
