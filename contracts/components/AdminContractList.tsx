@@ -3,6 +3,7 @@
 import type { Contract, ContractListFilter } from "@/lib/types";
 import { api } from "@/lib/api";
 import { formatCallableError } from "@/lib/apiErrors";
+import { startCopyContract } from "@/lib/contractCopy";
 import { buildSigningSmsMessage, copyText } from "@/lib/signingLink";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
@@ -44,6 +45,14 @@ async function copySigningLink(c: Contract) {
     const ok = await copyText(buildSigningSmsMessage(c.clientName, signingUrl));
     if (ok) alert("Signing link copied — paste into a text message to your client.");
     else alert(`Copy this link:\n${signingUrl}`);
+  } catch (err) {
+    alert(formatCallableError(err));
+  }
+}
+
+async function copyContract(c: Contract) {
+  try {
+    await startCopyContract(c.id);
   } catch (err) {
     alert(formatCallableError(err));
   }
@@ -145,6 +154,13 @@ export function AdminContractList({
                         onClick={() => onAction("details", c.id)}
                       >
                         Details
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => copyContract(c)}
+                      >
+                        Copy
                       </button>
                       {canShareSigningLink(c) && (
                         <button

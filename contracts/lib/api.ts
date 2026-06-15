@@ -157,6 +157,12 @@ export const api = {
       { contractId: string; contract: Contract }
     >("renewContract", { contractId, ...updates }),
 
+  copyContract: (contractId: string) =>
+    adminCall<
+      { contractId: string },
+      { fields: ContractFormData; sourceContractId: string }
+    >("copyContract", { contractId }),
+
   cancelContract: (contractId: string) =>
     adminCall<{ contractId: string }, { success: boolean }>("cancelContract", {
       contractId,

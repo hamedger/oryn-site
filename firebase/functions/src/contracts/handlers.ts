@@ -695,6 +695,34 @@ export async function handleEmailSignedCopy(
   return { success: true };
 }
 
+export async function handleCopyContract(
+  contractId: string
+): Promise<{ fields: Record<string, unknown>; sourceContractId: string }> {
+  const snap = await db().collection("contracts").doc(contractId).get();
+  if (!snap.exists) throw new HttpsError("not-found", "Contract not found.");
+
+  const data = snap.data()!;
+  const today = new Date().toISOString().slice(0, 10);
+
+  return {
+    sourceContractId: contractId,
+    fields: {
+      clientName: "",
+      clientAddress: "",
+      clientEmail: "",
+      projectDescription: data.projectDescription ?? "",
+      onboardingFee: data.onboardingFee ?? 0,
+      monthlyFee: data.monthlyFee ?? 0,
+      termMonths: data.termMonths ?? null,
+      startDate: today,
+      customTerms: data.customTerms ?? "",
+      onboardingFeePaymentLink: data.onboardingFeePaymentLink ?? "",
+      monthlyFeePaymentLink: data.monthlyFeePaymentLink ?? "",
+      adminOverrideAllowDifferentSignerEmail: false,
+    },
+  };
+}
+
 export async function handleRenewContract(
   contractId: string,
   raw: Record<string, unknown>,

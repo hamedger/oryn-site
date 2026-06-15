@@ -150,6 +150,14 @@ export function ContractDetail({
       <section className="card">
         <h2>Actions</h2>
         <div className="action-bar">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={busy}
+            onClick={() => onAction("copy")}
+          >
+            Copy Contract
+          </button>
           {contract.unsignedPdfPath && (
             <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => onAction("unsigned-pdf")}>
               View Unsigned PDF

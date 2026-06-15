@@ -14,6 +14,7 @@ import {
   handlePdfDownloadUrl,
   handleEmailSignedCopy,
   handleRenewContract,
+  handleCopyContract,
   handleCancelContract,
   handlePreviewContract,
   handleListContractTemplates,
@@ -115,6 +116,13 @@ export const renewContract = onCall(callableOptions, async (request) => {
   const contractId = String(data.contractId || "");
   if (!contractId) throw new Error("contractId required");
   return handleRenewContract(contractId, data, admin);
+});
+
+export const copyContract = onCall(callableOptions, async (request) => {
+  await requireAdmin(request);
+  const contractId = String((request.data as { contractId?: string })?.contractId || "");
+  if (!contractId) throw new Error("contractId required");
+  return handleCopyContract(contractId);
 });
 
 export const cancelContract = onCall(callableOptions, async (request) => {

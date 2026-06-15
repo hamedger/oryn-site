@@ -9,6 +9,7 @@ import { ContractPreview } from "@/components/ContractPreview";
 import { contractRenewHref } from "@/lib/contractRoutes";
 import { useAuth, useAuthReady } from "@/lib/auth-context";
 import { api } from "@/lib/api";
+import { startCopyContract } from "@/lib/contractCopy";
 import type { Contract, ContractListFilter } from "@/lib/types";
 import { renderContractText, contractTextToHtml } from "@/lib/contractTemplate";
 
@@ -106,6 +107,10 @@ export default function AdminContractsPage() {
       }
       if (action === "renew") {
         window.location.href = contractRenewHref(contractId);
+        return;
+      }
+      if (action === "copy") {
+        await startCopyContract(contractId);
         return;
       }
       if (action === "cancel") {

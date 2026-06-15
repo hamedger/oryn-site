@@ -7,6 +7,7 @@ import { SigningLinkPanel } from "@/components/SigningLinkPanel";
 import { PdfViewer } from "@/components/PdfViewer";
 import { api } from "@/lib/api";
 import { formatCallableError } from "@/lib/apiErrors";
+import { startCopyContract } from "@/lib/contractCopy";
 import { useAuthReady } from "@/lib/auth-context";
 import type {
   Contract,
@@ -80,6 +81,10 @@ export function ContractDetailModal({
         await api.resendContractEmail(contractId);
         await load();
         await onRefreshList();
+        return;
+      }
+      if (action === "copy") {
+        await startCopyContract(contractId);
         return;
       }
       if (action === "unsigned-pdf" || action === "signed-pdf") {

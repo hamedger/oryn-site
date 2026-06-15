@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminGuard } from "@/components/AdminGuard";
 import { ContractForm } from "@/components/ContractForm";
 import { ContractPreview } from "@/components/ContractPreview";
 import { ContractTemplatePanel } from "@/components/ContractTemplatePanel";
 import { api } from "@/lib/api";
+import { consumeContractCopy } from "@/lib/contractCopy";
 import type { ContractFormData } from "@/lib/types";
 
 const emptyClientFields: ContractFormData = {
@@ -33,6 +34,25 @@ export default function NewContractPage() {
   const [formSeed, setFormSeed] = useState<ContractFormData>(emptyClientFields);
   const [formKey, setFormKey] = useState(0);
   const [draftForm, setDraftForm] = useState<ContractFormData>(emptyClientFields);
+  const [copiedFromId, setCopiedFromId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const copy = consumeContractCopy();
+    if (!copy) return;
+
+    const next = {
+      ...emptyClientFields,
+      ...copy.fields,
+      clientName: "",
+      clientAddress: "",
+      clientEmail: "",
+      startDate: new Date().toISOString().slice(0, 10),
+    };
+    setFormSeed(next);
+    setDraftForm(next);
+    setFormKey((k) => k + 1);
+    setCopiedFromId(copy.sourceContractId);
+  }, []);
 
   function applyTemplate(fields: Partial<ContractFormData>) {
     const next = {
@@ -110,6 +130,12 @@ export default function NewContractPage() {
             Back
           </Link>
         </div>
+        {copiedFromId && (
+          <div className="alert alert-success">
+            Copied contract terms from <strong>{copiedFromId}</strong>. Enter the new client
+            details below, then save or send.
+          </div>
+        )}
         {error && <div className="alert alert-error">{error}</div>}
         <ContractTemplatePanel formData={draftForm} onApply={applyTemplate} />
         <section className="card">

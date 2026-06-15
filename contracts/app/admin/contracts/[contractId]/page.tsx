@@ -8,6 +8,7 @@ import { ContractDetail } from "@/components/ContractDetail";
 import { PdfViewer } from "@/components/PdfViewer";
 import { api } from "@/lib/api";
 import { formatCallableError } from "@/lib/apiErrors";
+import { startCopyContract } from "@/lib/contractCopy";
 import { useAuthReady } from "@/lib/auth-context";
 import { useContractId } from "@/lib/useResolvedRouteParam";
 import type {
@@ -64,6 +65,10 @@ export default function ContractDetailPage() {
       if (action === "resend") {
         await api.resendContractEmail(contractId);
         await load();
+        return;
+      }
+      if (action === "copy") {
+        await startCopyContract(contractId);
         return;
       }
       if (action === "unsigned-pdf" || action === "signed-pdf") {
