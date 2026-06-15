@@ -53,6 +53,7 @@ export interface ContractFormInput {
   startDate: string;
   customTerms: string;
   onboardingFeePaymentLink?: string;
+  monthlyFeePaymentLink?: string;
   adminOverrideAllowDifferentSignerEmail?: boolean;
 }
 
@@ -108,6 +109,9 @@ export function sanitizePlainText(value: string): string {
     .trim();
 }
 
+const CONTRACT_LOGO_HTML =
+  '<div class="contract-logo"><img src="/oryn-logo.png" alt="Oryn Inc." width="96" height="96" /></div>';
+
 export function contractTextToHtml(text: string): string {
   const escaped = text
     .replace(/&/g, "&amp;")
@@ -115,10 +119,12 @@ export function contractTextToHtml(text: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-  return escaped
+  const body = escaped
     .split("\n\n")
     .map((p) => `<p>${p.replace(/\n/g, "<br/>")}</p>`)
     .join("");
+
+  return `${CONTRACT_LOGO_HTML}${body}`;
 }
 
 export function validateContractInput(input: ContractFormInput | Record<string, unknown>): string | null {
@@ -138,11 +144,18 @@ export function validateContractInput(input: ContractFormInput | Record<string, 
     return "Invalid term months";
   }
 
-  const paymentLink = input.onboardingFeePaymentLink
+  const onboardingLink = input.onboardingFeePaymentLink
     ? String(input.onboardingFeePaymentLink)
     : "";
-  if (paymentLink && !/^https:\/\/[^\s]+$/i.test(paymentLink)) {
+  if (onboardingLink && !/^https:\/\/[^\s]+$/i.test(onboardingLink)) {
     return "Onboarding fee payment link must be a valid HTTPS URL";
+  }
+
+  const monthlyLink = input.monthlyFeePaymentLink
+    ? String(input.monthlyFeePaymentLink)
+    : "";
+  if (monthlyLink && !/^https:\/\/[^\s]+$/i.test(monthlyLink)) {
+    return "Monthly fee payment link must be a valid HTTPS URL";
   }
 
   if (!String(input.clientName || "").trim()) return "Client name is required";

@@ -15,6 +15,7 @@ import { ContractStatusBadge } from "./ContractStatusBadge";
 import { ContractPreview } from "./ContractPreview";
 import { SignedContractSummary } from "./SignedContractSummary";
 import { AuditTimeline } from "./AuditTimeline";
+import { SigningLinkPanel } from "./SigningLinkPanel";
 
 function fmtDate(iso: string | null) {
   if (!iso) return "—";
@@ -48,6 +49,8 @@ export function ContractDetail({
   const isSigned = contract.status === "signed";
   const isDraft = contract.status === "draft";
   const canCancel = !isSigned && contract.status !== "cancelled";
+  const canShareSigningLink =
+    !isSigned && contract.status !== "cancelled" && contract.status !== "draft";
 
   return (
     <div className="contract-detail">
@@ -58,6 +61,12 @@ export function ContractDetail({
         </div>
         <ContractStatusBadge status={contract.status} />
       </div>
+
+      <SigningLinkPanel
+        contractId={contract.id}
+        clientName={contract.clientName}
+        active={canShareSigningLink}
+      />
 
       <section className="card">
         <h2>Contract Details</h2>
@@ -70,12 +79,22 @@ export function ContractDetail({
           <div><dt>Monthly fee</dt><dd>{fmtMoney(contract.monthlyFee)}</dd></div>
           <div><dt>Term</dt><dd>{formatTermLabel(contract.termMonths)}</dd></div>
           <div><dt>Start date</dt><dd>{contract.startDate}</dd></div>
-          {contract.onboardingFeePaymentLink && (
+      {contract.onboardingFeePaymentLink && (
             <div className="full-width">
-              <dt>Stripe payment link</dt>
+              <dt>Onboarding fee payment link</dt>
               <dd>
                 <a href={contract.onboardingFeePaymentLink} target="_blank" rel="noopener noreferrer">
                   {contract.onboardingFeePaymentLink}
+                </a>
+              </dd>
+            </div>
+          )}
+          {contract.monthlyFeePaymentLink && (
+            <div className="full-width">
+              <dt>Monthly fee payment link</dt>
+              <dd>
+                <a href={contract.monthlyFeePaymentLink} target="_blank" rel="noopener noreferrer">
+                  {contract.monthlyFeePaymentLink}
                 </a>
               </dd>
             </div>

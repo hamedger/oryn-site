@@ -89,6 +89,8 @@ export function serializeContract(
   ] as const;
 
   const out: Record<string, unknown> = { ...data, id };
+  delete out.signingToken;
+  delete out.tokenHash;
   for (const f of tsFields) {
     const val = data[f];
     out[f] = val?.toDate ? val.toDate().toISOString() : val ?? null;

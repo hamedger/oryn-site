@@ -21,6 +21,7 @@ const emptyClientFields: ContractFormData = {
   startDate: new Date().toISOString().slice(0, 10),
   customTerms: "",
   onboardingFeePaymentLink: "",
+  monthlyFeePaymentLink: "",
   adminOverrideAllowDifferentSignerEmail: false,
 };
 

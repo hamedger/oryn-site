@@ -33,9 +33,10 @@
         if (!target && /^\/sign\/([^/]+)\/?$/.test(path)) {
           var signMatch = path.match(/^\/sign\/([^/]+)\/?$/);
           if (signMatch && signMatch[1] !== "_") {
-            sessionStorage.setItem("oryn-spa-path", path);
+            target = "/sign/_/?token=" + encodeURIComponent(signMatch[1]);
+          } else {
+            target = "/sign/_/";
           }
-          target = "/sign/_/";
         }
 
         if (target) {

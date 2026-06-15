@@ -1,15 +1,15 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { SignaturePad } from "@/components/SignaturePad";
 import { api } from "@/lib/api";
-import { resolveRouteParam } from "@/lib/routeParams";
+import { useSigningToken } from "@/lib/useSigningToken";
 import type { PublicContractView } from "@/lib/types";
 
 export default function SignContractPage() {
   const params = useParams();
-  const token = resolveRouteParam(params.token, 1);
+  const token = useSigningToken(params.token);
   const [contract, setContract] = useState<PublicContractView | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -21,6 +21,14 @@ export default function SignContractPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    if (!token || token.length < 32) {
+      setLoading(false);
+      setError("This signing link is invalid or incomplete.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
     api.getContractByToken(token)
       .then((data) => {
         setContract(data as PublicContractView);
@@ -106,7 +114,7 @@ export default function SignContractPage() {
         <div className="payment-banner">
           <strong>Onboarding Fee Payment</strong>
           <p className="muted" style={{ margin: "0.35rem 0 0" }}>
-            You can pay the one-time onboarding fee securely via Stripe before or after signing.
+            Pay the one-time onboarding fee securely via Stripe before or after signing.
           </p>
           <a
             href={contract.onboardingFeePaymentLink}
@@ -114,6 +122,22 @@ export default function SignContractPage() {
             rel="noopener noreferrer"
           >
             Pay Onboarding Fee
+          </a>
+        </div>
+      )}
+
+      {contract.monthlyFeePaymentLink && (
+        <div className="payment-banner">
+          <strong>Monthly Fee Payment</strong>
+          <p className="muted" style={{ margin: "0.35rem 0 0" }}>
+            Set up or pay the monthly maintenance and support fee via Stripe.
+          </p>
+          <a
+            href={contract.monthlyFeePaymentLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pay Monthly Fee
           </a>
         </div>
       )}

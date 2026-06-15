@@ -28,6 +28,7 @@ export interface ContractTemplate {
   termMonths: number | null;
   customTerms: string;
   onboardingFeePaymentLink: string;
+  monthlyFeePaymentLink: string;
   adminOverrideAllowDifferentSignerEmail: boolean;
   createdAt: string;
   updatedAt: string;
@@ -52,6 +53,8 @@ export interface Contract {
   customTerms: string;
   /** Stripe Payment Link URL for onboarding fee — pasted by admin, shown to customer */
   onboardingFeePaymentLink: string | null;
+  /** Stripe Payment Link URL for monthly fee — pasted by admin, shown to customer */
+  monthlyFeePaymentLink: string | null;
   contractText: string;
   contractVersion: string;
   tokenHash: string | null;
@@ -81,6 +84,7 @@ export interface ContractFormData {
   startDate: string;
   customTerms: string;
   onboardingFeePaymentLink: string;
+  monthlyFeePaymentLink: string;
   adminOverrideAllowDifferentSignerEmail?: boolean;
 }
 
@@ -128,6 +132,7 @@ export interface PublicContractView {
   status: ContractStatus;
   clientEmail: string;
   onboardingFeePaymentLink: string | null;
+  monthlyFeePaymentLink: string | null;
   adminOverrideAllowDifferentSignerEmail: boolean;
 }
 

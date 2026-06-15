@@ -16,7 +16,8 @@ export function getSigningUrl(token: string): string {
     process.env.SIGNING_BASE_URL ||
     process.env.APP_BASE_URL ||
     "https://orynsolutions.io";
-  return `${base.replace(/\/$/, "")}/sign/${token}`;
+  // Query param works on GitHub Pages static hosting (/sign/_/ exists; /sign/{token}/ does not).
+  return `${base.replace(/\/$/, "")}/sign/_/?token=${encodeURIComponent(token)}`;
 }
 
 export function tokenExpiresAt(): Timestamp {

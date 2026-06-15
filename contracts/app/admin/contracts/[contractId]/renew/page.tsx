@@ -46,6 +46,7 @@ export default function RenewContractPage() {
         termMonths: data.termMonths,
         startDate: data.startDate,
         onboardingFeePaymentLink: data.onboardingFeePaymentLink,
+        monthlyFeePaymentLink: data.monthlyFeePaymentLink,
       });
       router.push(contractEditHref(res.contractId));
     } catch (err) {
@@ -82,6 +83,7 @@ export default function RenewContractPage() {
     termMonths: original.termMonths,
     startDate: new Date().toISOString().slice(0, 10),
     onboardingFeePaymentLink: original.onboardingFeePaymentLink || "",
+    monthlyFeePaymentLink: original.monthlyFeePaymentLink || "",
     adminOverrideAllowDifferentSignerEmail: original.adminOverrideAllowDifferentSignerEmail,
   };
 

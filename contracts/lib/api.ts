@@ -119,6 +119,12 @@ export const api = {
       }
     >("getContractDetail", { contractId }),
 
+  getContractSigningLink: (contractId: string) =>
+    adminCall<{ contractId: string }, { signingUrl: string }>(
+      "getContractSigningLink",
+      { contractId }
+    ),
+
   getPdfDownloadUrl: (
     contractId: string,
     type: "unsigned" | "signed"
@@ -142,7 +148,7 @@ export const api = {
     updates: Partial<
       Pick<
         ContractFormData,
-        "onboardingFee" | "monthlyFee" | "termMonths" | "startDate" | "onboardingFeePaymentLink"
+        "onboardingFee" | "monthlyFee" | "termMonths" | "startDate" | "onboardingFeePaymentLink" | "monthlyFeePaymentLink"
       >
     >
   ) =>

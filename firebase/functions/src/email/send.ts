@@ -25,6 +25,7 @@ export async function sendSigningLinkEmail(params: {
   clientName: string;
   signingUrl: string;
   onboardingFeePaymentLink?: string | null;
+  monthlyFeePaymentLink?: string | null;
   isResend?: boolean;
 }): Promise<void> {
   const emailType = params.isResend ? "resend_signing_link" : "signing_link";
@@ -40,10 +41,15 @@ export async function sendSigningLinkEmail(params: {
     return;
   }
 
-  const paymentSection = params.onboardingFeePaymentLink
-    ? `<p>When you're ready, you can pay the onboarding fee securely here:<br/>
+  const onboardingPayment = params.onboardingFeePaymentLink
+    ? `<p>Pay the one-time onboarding fee securely here:<br/>
        <a href="${params.onboardingFeePaymentLink}">Pay Onboarding Fee</a></p>`
     : "";
+  const monthlyPayment = params.monthlyFeePaymentLink
+    ? `<p>Set up the monthly maintenance fee here:<br/>
+       <a href="${params.monthlyFeePaymentLink}">Pay Monthly Fee</a></p>`
+    : "";
+  const paymentSection = onboardingPayment + monthlyPayment;
 
   const html = `
     <p>Hello ${params.clientName},</p>

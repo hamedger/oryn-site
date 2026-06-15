@@ -18,6 +18,7 @@ export interface ContractDoc {
   startDate: string;
   customTerms: string;
   onboardingFeePaymentLink: string | null;
+  monthlyFeePaymentLink: string | null;
   contractText: string;
   contractVersion: string;
   tokenHash: string | null;
@@ -47,5 +48,6 @@ export interface ContractFormInput {
   startDate: string;
   customTerms: string;
   onboardingFeePaymentLink?: string;
+  monthlyFeePaymentLink?: string;
   adminOverrideAllowDifferentSignerEmail?: boolean;
 }

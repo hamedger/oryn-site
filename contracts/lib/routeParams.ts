@@ -40,3 +40,35 @@ export function resolveContractId(
   if (fromQuery) return fromQuery;
   return resolveRouteParam(param, pathSegmentIndex);
 }
+
+function signingTokenFromQuery(): string {
+  if (typeof window === "undefined") return "";
+  const token = new URLSearchParams(window.location.search).get("token")?.trim();
+  return token && token !== "_" && token.length >= 32 ? token : "";
+}
+
+/** Signing token from ?token= query (GitHub Pages) or /sign/{token} path fallback. */
+export function resolveSigningToken(
+  param: string | string[] | undefined,
+  pathSegmentIndex = 1
+): string {
+  const fromQuery = signingTokenFromQuery();
+  if (fromQuery) return fromQuery;
+
+  const value = Array.isArray(param) ? param[0] : param;
+  if (value && value !== "_" && value.length >= 32) return value;
+
+  if (typeof window === "undefined") return "";
+
+  const fromPath = segmentAt(window.location.pathname, pathSegmentIndex);
+  if (fromPath && fromPath.length >= 32) return fromPath;
+
+  const stored = sessionStorage.getItem("oryn-spa-path");
+  if (stored) {
+    sessionStorage.removeItem("oryn-spa-path");
+    const fromStored = segmentAt(stored, pathSegmentIndex);
+    if (fromStored && fromStored.length >= 32) return fromStored;
+  }
+
+  return "";
+}

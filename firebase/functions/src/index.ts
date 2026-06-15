@@ -10,6 +10,7 @@ import {
   handleAcceptContract,
   handleListContracts,
   handleGetContractDetail,
+  handleGetContractSigningLink,
   handlePdfDownloadUrl,
   handleEmailSignedCopy,
   handleRenewContract,
@@ -81,6 +82,13 @@ export const getContractDetail = onCall(callableOptions, async (request) => {
   const contractId = String((request.data as { contractId?: string })?.contractId || "");
   if (!contractId) throw new Error("contractId required");
   return handleGetContractDetail(contractId);
+});
+
+export const getContractSigningLink = onCall(callableOptions, async (request) => {
+  const admin = await requireAdmin(request);
+  const contractId = String((request.data as { contractId?: string })?.contractId || "");
+  if (!contractId) throw new Error("contractId required");
+  return handleGetContractSigningLink(contractId, admin);
 });
 
 export const getSignedPdfDownloadUrl = onCall(callableOptions, async (request) => {

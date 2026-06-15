@@ -379,9 +379,51 @@ a { color: var(--color-primary); }
 
 .contract-preview-body p { margin: 0 0 0.85rem; }
 
+.contract-logo {
+  margin: 0 0 1.25rem;
+}
+
+.contract-logo img {
+  display: block;
+  width: 96px;
+  height: auto;
+}
+
 .sign-page {
   max-width: 720px;
   margin: 0 auto;
+  padding: 1rem 1rem 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .sign-page {
+    padding: 0.75rem 0.75rem 2rem;
+  }
+
+  .sign-contract-body {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .sign-page .form-actions .btn-primary {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+.signing-link-panel .signing-link-box {
+  margin: 0.75rem 0;
+}
+
+.signing-link-input {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(29, 53, 87, 0.15);
+  border-radius: 8px;
+  background: rgba(29, 53, 87, 0.03);
+  font-family: ui-monospace, monospace;
 }
 
 .sign-contract-body {

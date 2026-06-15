@@ -103,6 +103,7 @@ export default function EditContractPage() {
             initial={{
               ...contract,
               onboardingFeePaymentLink: contract.onboardingFeePaymentLink || "",
+              monthlyFeePaymentLink: contract.monthlyFeePaymentLink || "",
             }}
             onSubmit={handleSave}
             onPreview={handlePreview}

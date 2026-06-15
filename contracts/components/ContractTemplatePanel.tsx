@@ -12,6 +12,7 @@ type TemplateFields = Pick<
   | "termMonths"
   | "customTerms"
   | "onboardingFeePaymentLink"
+  | "monthlyFeePaymentLink"
   | "adminOverrideAllowDifferentSignerEmail"
 >;
 
@@ -53,6 +54,7 @@ export function ContractTemplatePanel({ formData, onApply }: Props) {
       termMonths: data.termMonths,
       customTerms: data.customTerms,
       onboardingFeePaymentLink: data.onboardingFeePaymentLink,
+      monthlyFeePaymentLink: data.monthlyFeePaymentLink,
       adminOverrideAllowDifferentSignerEmail:
         data.adminOverrideAllowDifferentSignerEmail ?? false,
     };
@@ -68,6 +70,7 @@ export function ContractTemplatePanel({ formData, onApply }: Props) {
       termMonths: template.termMonths,
       customTerms: template.customTerms,
       onboardingFeePaymentLink: template.onboardingFeePaymentLink,
+      monthlyFeePaymentLink: template.monthlyFeePaymentLink ?? "",
       adminOverrideAllowDifferentSignerEmail:
         template.adminOverrideAllowDifferentSignerEmail,
     });

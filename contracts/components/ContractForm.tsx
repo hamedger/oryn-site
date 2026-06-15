@@ -19,6 +19,7 @@ const emptyForm: ContractFormData = {
   startDate: new Date().toISOString().slice(0, 10),
   customTerms: "",
   onboardingFeePaymentLink: "",
+  monthlyFeePaymentLink: "",
   adminOverrideAllowDifferentSignerEmail: false,
 };
 
@@ -149,7 +150,7 @@ export function ContractForm({
           Project Description *
           <textarea
             required
-            rows={3}
+            rows={6}
             disabled={readOnly}
             value={form.projectDescription}
             onChange={(e) => update("projectDescription", e.target.value)}
@@ -227,7 +228,20 @@ export function ContractForm({
             onChange={(e) => update("onboardingFeePaymentLink", e.target.value)}
           />
           <span className="field-hint">
-            Paste a Stripe Payment Link — customers will receive this in the signing email and on the signing page.
+            Paste a Stripe Payment Link for the one-time onboarding fee.
+          </span>
+        </label>
+        <label className="full-width">
+          Stripe Monthly Fee Payment Link
+          <input
+            type="url"
+            placeholder="https://buy.stripe.com/..."
+            disabled={readOnly}
+            value={form.monthlyFeePaymentLink}
+            onChange={(e) => update("monthlyFeePaymentLink", e.target.value)}
+          />
+          <span className="field-hint">
+            Paste a Stripe Payment Link for the recurring monthly fee.
           </span>
         </label>
         <label className="full-width">

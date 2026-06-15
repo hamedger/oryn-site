@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ContractDetail } from "@/components/ContractDetail";
 import { ContractStatusBadge } from "@/components/ContractStatusBadge";
+import { SigningLinkPanel } from "@/components/SigningLinkPanel";
 import { PdfViewer } from "@/components/PdfViewer";
 import { api } from "@/lib/api";
 import { formatCallableError } from "@/lib/apiErrors";
@@ -121,6 +122,11 @@ export function ContractDetailModal({
   }
 
   const summary = listContract ?? contract;
+  const canShareSigningLink =
+    summary != null &&
+    summary.status !== "signed" &&
+    summary.status !== "cancelled" &&
+    summary.status !== "draft";
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -156,6 +162,14 @@ export function ContractDetailModal({
                 {summary.signedAt && ` Signed ${fmtDate(summary.signedAt)}.`}
               </p>
             </div>
+          )}
+
+          {canShareSigningLink && summary && !contract && (
+            <SigningLinkPanel
+              contractId={contractId}
+              clientName={summary.clientName}
+              active
+            />
           )}
 
           {loading && <p className="muted">Loading full details…</p>}

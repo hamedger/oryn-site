@@ -1,6 +1,9 @@
 "use client";
 
 import type { Contract, ContractListFilter } from "@/lib/types";
+import { api } from "@/lib/api";
+import { formatCallableError } from "@/lib/apiErrors";
+import { buildSigningSmsMessage, copyText } from "@/lib/signingLink";
 import { formatTermLabel } from "@/lib/termUtils";
 import { ContractStatusBadge } from "./ContractStatusBadge";
 
@@ -29,6 +32,21 @@ function fmtMoney(n: number) {
     style: "currency",
     currency: "USD",
   }).format(n);
+}
+
+function canShareSigningLink(c: Contract): boolean {
+  return c.status !== "signed" && c.status !== "cancelled" && c.status !== "draft";
+}
+
+async function copySigningLink(c: Contract) {
+  try {
+    const { signingUrl } = await api.getContractSigningLink(c.id);
+    const ok = await copyText(buildSigningSmsMessage(c.clientName, signingUrl));
+    if (ok) alert("Signing link copied — paste into a text message to your client.");
+    else alert(`Copy this link:\n${signingUrl}`);
+  } catch (err) {
+    alert(formatCallableError(err));
+  }
 }
 
 interface Props {
@@ -128,6 +146,15 @@ export function AdminContractList({
                       >
                         Details
                       </button>
+                      {canShareSigningLink(c) && (
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-sm"
+                          onClick={() => copySigningLink(c)}
+                        >
+                          Copy Link
+                        </button>
+                      )}
                       {c.status === "draft" && (
                         <a
                           href={`/admin/contracts/_/edit/?id=${encodeURIComponent(c.id)}`}

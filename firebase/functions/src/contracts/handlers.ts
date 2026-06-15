@@ -56,6 +56,9 @@ function normalizeInput(raw: Record<string, unknown>): ContractFormInput {
     onboardingFeePaymentLink: raw.onboardingFeePaymentLink
       ? String(raw.onboardingFeePaymentLink).trim()
       : undefined,
+    monthlyFeePaymentLink: raw.monthlyFeePaymentLink
+      ? String(raw.monthlyFeePaymentLink).trim()
+      : undefined,
     adminOverrideAllowDifferentSignerEmail:
       Boolean(raw.adminOverrideAllowDifferentSignerEmail),
   };
@@ -100,9 +103,11 @@ export async function handleCreateContract(
     startDate: input.startDate,
     customTerms: input.customTerms,
     onboardingFeePaymentLink: input.onboardingFeePaymentLink || null,
+    monthlyFeePaymentLink: input.monthlyFeePaymentLink || null,
     contractText,
     contractVersion: CONTRACT_VERSION,
     tokenHash,
+    signingToken: rawToken,
     tokenExpiresAt: tokenExp,
     status,
     unsignedPdfPath,
@@ -138,6 +143,7 @@ export async function handleCreateContract(
       clientName: input.clientName,
       signingUrl,
       onboardingFeePaymentLink: input.onboardingFeePaymentLink || null,
+      monthlyFeePaymentLink: input.monthlyFeePaymentLink || null,
     });
 
     await createAuditLog({
@@ -197,6 +203,7 @@ export async function handleUpdateDraft(
   await ref.update({
     ...input,
     onboardingFeePaymentLink: input.onboardingFeePaymentLink || null,
+    monthlyFeePaymentLink: input.monthlyFeePaymentLink || null,
     contractText,
     updatedAt: FieldValue.serverTimestamp(),
   });
@@ -244,6 +251,7 @@ export async function handleSendContract(
 
   await ref.update({
     tokenHash,
+    signingToken: rawToken,
     tokenExpiresAt: tokenExp,
     status: "sent",
     unsignedPdfPath,
@@ -260,6 +268,7 @@ export async function handleSendContract(
     clientName: data.clientName as string,
     signingUrl,
     onboardingFeePaymentLink: (data.onboardingFeePaymentLink as string) || null,
+    monthlyFeePaymentLink: (data.monthlyFeePaymentLink as string) || null,
     isResend,
   });
 
@@ -338,6 +347,7 @@ export async function handleGetContractByToken(
     status: data.status === "sent" ? "viewed" : data.status,
     clientEmail: data.clientEmail,
     onboardingFeePaymentLink: data.onboardingFeePaymentLink || null,
+    monthlyFeePaymentLink: data.monthlyFeePaymentLink || null,
     adminOverrideAllowDifferentSignerEmail:
       data.adminOverrideAllowDifferentSignerEmail ?? false,
   };
@@ -448,6 +458,9 @@ export async function handleAcceptContract(
     signedPdfPath: pdfPath,
     updatedAt: FieldValue.serverTimestamp(),
     contractText: signedContractText,
+    signingToken: null,
+    tokenHash: null,
+    tokenExpiresAt: null,
   });
 
   await createAuditLog({
@@ -523,6 +536,54 @@ export async function handleListContracts(
   }
 
   return { contracts };
+}
+
+export async function handleGetContractSigningLink(
+  contractId: string,
+  admin: { email: string }
+): Promise<{ signingUrl: string }> {
+  const ref = db().collection("contracts").doc(contractId);
+  const snap = await ref.get();
+  if (!snap.exists) throw new HttpsError("not-found", "Contract not found.");
+
+  const data = snap.data()!;
+  if (data.status === "signed") {
+    throw new HttpsError("failed-precondition", "Contract is already signed.");
+  }
+  if (data.status === "cancelled") {
+    throw new HttpsError("failed-precondition", "Contract is cancelled.");
+  }
+  if (data.status === "draft") {
+    throw new HttpsError(
+      "failed-precondition",
+      "Send the contract first to generate a client signing link."
+    );
+  }
+
+  const expiresAt = data.tokenExpiresAt?.toDate?.();
+  const expired = Boolean(expiresAt && expiresAt < new Date());
+  let rawToken = data.signingToken as string | undefined;
+
+  if (!rawToken || expired) {
+    rawToken = generateSigningToken();
+    await ref.update({
+      signingToken: rawToken,
+      tokenHash: hashToken(rawToken),
+      tokenExpiresAt: tokenExpiresAt(),
+      updatedAt: FieldValue.serverTimestamp(),
+      status: data.status === "expired" ? "sent" : data.status,
+    });
+
+    await createAuditLog({
+      contractId,
+      eventType: "signing_link_resent",
+      actorType: "admin",
+      actorEmail: admin.email,
+      message: "Signing link refreshed for admin copy/share",
+    });
+  }
+
+  return { signingUrl: getSigningUrl(rawToken) };
 }
 
 export async function handleGetContractDetail(contractId: string): Promise<Record<string, unknown>> {
@@ -655,6 +716,8 @@ export async function handleRenewContract(
     startDate: raw.startDate ?? original.startDate,
     onboardingFeePaymentLink:
       raw.onboardingFeePaymentLink ?? original.onboardingFeePaymentLink,
+    monthlyFeePaymentLink:
+      raw.monthlyFeePaymentLink ?? original.monthlyFeePaymentLink,
     adminOverrideAllowDifferentSignerEmail:
       original.adminOverrideAllowDifferentSignerEmail,
   });
@@ -670,6 +733,7 @@ export async function handleRenewContract(
     id: ref.id,
     ...input,
     onboardingFeePaymentLink: input.onboardingFeePaymentLink || null,
+    monthlyFeePaymentLink: input.monthlyFeePaymentLink || null,
     contractText,
     contractVersion: CONTRACT_VERSION,
     tokenHash: null,
@@ -772,6 +836,7 @@ function serializeTemplate(
     termMonths: data.termMonths ?? null,
     customTerms: data.customTerms || "",
     onboardingFeePaymentLink: data.onboardingFeePaymentLink || "",
+    monthlyFeePaymentLink: data.monthlyFeePaymentLink || "",
     adminOverrideAllowDifferentSignerEmail:
       data.adminOverrideAllowDifferentSignerEmail ?? false,
     createdAt: timestampToIso(data.createdAt),
@@ -793,6 +858,7 @@ function normalizeTemplateInput(raw: Record<string, unknown>) {
     termMonths: parseTermMonths(raw.termMonths),
     customTerms: sanitizePlainText(String(raw.customTerms || "")),
     onboardingFeePaymentLink: String(raw.onboardingFeePaymentLink || "").trim(),
+    monthlyFeePaymentLink: String(raw.monthlyFeePaymentLink || "").trim(),
     adminOverrideAllowDifferentSignerEmail: Boolean(
       raw.adminOverrideAllowDifferentSignerEmail
     ),
