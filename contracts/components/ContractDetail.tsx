@@ -175,7 +175,7 @@ export function ContractDetail({
                 Email Copy to Client
               </button>
               <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => onAction("email-admin")}>
-                Email Copy to Admin
+                Email Copy to info@orynsolutions.io
               </button>
               <Link href={contractRenewHref(contract.id)} className="btn btn-secondary">
                 Renew Contract

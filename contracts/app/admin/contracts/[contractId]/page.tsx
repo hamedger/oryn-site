@@ -93,7 +93,7 @@ export default function ContractDetailPage() {
       }
       if (action === "email-admin") {
         await api.emailSignedCopy(contractId, "admin");
-        alert("Signed copy emailed to admin.");
+        alert("Signed copy emailed to info@orynsolutions.io.");
         await load();
         return;
       }

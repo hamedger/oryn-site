@@ -17,7 +17,7 @@ const fromEmail = () =>
   process.env.EMAIL_FROM || "Oryn Inc. <contracts@orynsolutions.io>";
 
 const adminNotifyEmail = () =>
-  process.env.ADMIN_NOTIFY_EMAIL || "hamed@orynsolutions.io";
+  process.env.ADMIN_NOTIFY_EMAIL || "info@orynsolutions.io";
 
 export async function sendSigningLinkEmail(params: {
   contractId: string;
@@ -68,6 +68,13 @@ export async function sendSigningLinkEmail(params: {
       html,
     });
     await markEmailSent(emailId, result.data?.id ?? null);
+    await sendAdminSigningNotification({
+      contractId: params.contractId,
+      clientName: params.clientName,
+      clientEmail: params.recipientEmail,
+      signingUrl: params.signingUrl,
+      isResend: params.isResend,
+    });
   } catch (err) {
     await markEmailFailed(
       emailId,
@@ -149,5 +156,50 @@ export async function sendSignedCopyEmails(params: {
       );
       if (!isAdmin) throw err;
     }
+  }
+}
+
+async function sendAdminSigningNotification(params: {
+  contractId: string;
+  clientName: string;
+  clientEmail: string;
+  signingUrl: string;
+  isResend?: boolean;
+}): Promise<void> {
+  const adminEmail = adminNotifyEmail();
+  const emailId = await createEmailRecord({
+    contractId: params.contractId,
+    recipientEmail: adminEmail,
+    emailType: "admin_notification",
+  });
+
+  const resend = getResend();
+  if (!resend) {
+    await markEmailFailed(emailId, "RESEND_API_KEY not configured");
+    return;
+  }
+
+  const action = params.isResend ? "Signing link resent" : "Contract sent";
+  const html = `
+    <p>${action} to <strong>${params.clientName}</strong> (${params.clientEmail}).</p>
+    <p>Contract ID: ${params.contractId}</p>
+    <p>Client signing link:<br/>
+       <a href="${params.signingUrl}">${params.signingUrl}</a></p>
+    <p>— Oryn Contracts</p>
+  `;
+
+  try {
+    const result = await resend.emails.send({
+      from: fromEmail(),
+      to: adminEmail,
+      subject: `${action}: ${params.clientName}`,
+      html,
+    });
+    await markEmailSent(emailId, result.data?.id ?? null);
+  } catch (err) {
+    await markEmailFailed(
+      emailId,
+      err instanceof Error ? err.message : "Send failed"
+    );
   }
 }
