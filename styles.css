@@ -255,22 +255,29 @@ a {
 .hero-mock-1 {
   top: 0;
   right: 0;
-  z-index: 3;
+  z-index: 4;
   transform: rotate(-2.5deg);
 }
 
 .hero-mock-2 {
   top: 78px;
   right: 20%;
-  z-index: 2;
+  z-index: 3;
   transform: rotate(2deg);
 }
 
 .hero-mock-3 {
   top: 162px;
   right: 2%;
-  z-index: 1;
+  z-index: 2;
   transform: rotate(-1deg);
+}
+
+.hero-mock-4 {
+  top: 30px;
+  left: 0;
+  z-index: 1;
+  transform: rotate(4deg);
 }
 
 .trust-bar {
