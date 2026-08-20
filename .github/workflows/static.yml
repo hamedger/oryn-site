@@ -52,6 +52,7 @@ jobs:
           cp -r contracts/out/admin _site/admin
           cp -r contracts/out/sign _site/sign
           cp -r contracts/out/_next _site/_next
+          cp contracts/out/oryn-logo.png _site/oryn-logo.png
           cp scripts/gh-pages-404.html _site/404.html
           touch _site/.nojekyll
 

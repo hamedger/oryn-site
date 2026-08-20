@@ -1,5 +1,29 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import fs from "fs";
+import path from "path";
+import { PDFDocument, StandardFonts, rgb, type PDFImage } from "pdf-lib";
 import { getStorage } from "firebase-admin/storage";
+
+const LOGO_WIDTH = 72;
+
+async function loadContractLogo(pdfDoc: PDFDocument): Promise<{
+  image: PDFImage;
+  width: number;
+  height: number;
+} | null> {
+  try {
+    const logoPath = path.join(__dirname, "../assets/oryn-logo.png");
+    const logoBytes = fs.readFileSync(logoPath);
+    const image = await pdfDoc.embedPng(logoBytes);
+    const scale = LOGO_WIDTH / image.width;
+    return {
+      image,
+      width: LOGO_WIDTH,
+      height: image.height * scale,
+    };
+  } catch {
+    return null;
+  }
+}
 
 function wrapText(text: string, maxChars: number): string[] {
   const lines: string[] = [];
@@ -28,15 +52,30 @@ async function buildPdfPages(
 ): Promise<void> {
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const logo = await loadContractLogo(pdfDoc);
   const pageWidth = 612;
   const pageHeight = 792;
   const margin = 50;
   const lineHeight = 12;
   const maxWidth = pageWidth - margin * 2;
   const charsPerLine = Math.floor(maxWidth / 6.5);
+  const logoGap = 16;
 
   let page = pdfDoc.addPage([pageWidth, pageHeight]);
   let y = pageHeight - margin;
+  let drewLogo = false;
+
+  const drawLogo = () => {
+    if (!logo || drewLogo) return;
+    page.drawImage(logo.image, {
+      x: margin,
+      y: y - logo.height,
+      width: logo.width,
+      height: logo.height,
+    });
+    y -= logo.height + logoGap;
+    drewLogo = true;
+  };
 
   const addLine = (line: string, isBold = false) => {
     if (y < margin + (footer ? 40 : 20)) {
@@ -53,6 +92,8 @@ async function buildPdfPages(
     });
     y -= lineHeight;
   };
+
+  drawLogo();
 
   for (const section of sections) {
     const lines = wrapText(section, charsPerLine);

@@ -85,6 +85,9 @@ export function renderContractText(vars: TemplateVars): string {
     .replace(/\{\{ORYN_SIGNED_DATE\}\}/g, vars.orynSignedDate ?? "_________________________");
 }
 
+const CONTRACT_LOGO_HTML =
+  '<div class="contract-logo"><img src="/oryn-logo.png" alt="Oryn Inc." width="96" height="96" /></div>';
+
 export function contractTextToHtml(text: string): string {
   const escaped = text
     .replace(/&/g, "&amp;")
@@ -92,8 +95,10 @@ export function contractTextToHtml(text: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-  return escaped
+  const body = escaped
     .split("\n\n")
     .map((p) => `<p>${p.replace(/\n/g, "<br/>")}</p>`)
     .join("");
+
+  return `${CONTRACT_LOGO_HTML}${body}`;
 }
