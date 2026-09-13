@@ -86,6 +86,56 @@ a {
   line-height: 1.3;
 }
 
+.nav-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-toggle-label {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 34px;
+  height: 34px;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-toggle-label:hover {
+  background: rgba(29, 53, 87, 0.08);
+}
+
+.nav-toggle-label span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--color-dark);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle:focus-visible ~ .nav-toggle-label {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 .site-nav {
   display: flex;
   align-items: center;
@@ -989,16 +1039,63 @@ ul {
 
 @media (max-width: 720px) {
   .header-content {
-    flex-wrap: wrap;
+    position: relative;
+    flex-wrap: nowrap;
   }
 
   .brand {
-    gap: 0.3rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .tagline {
+    max-width: 150px;
+    text-align: left;
+    font-size: 0.7rem;
+  }
+
+  .nav-toggle-label {
+    display: flex;
   }
 
   .site-nav {
-    width: 100%;
-    justify-content: flex-start;
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    width: auto;
+    gap: 0.25rem;
+    background: white;
+    border-radius: 14px;
+    padding: 0.75rem;
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.18);
+  }
+
+  .nav-toggle:checked ~ .site-nav {
+    display: flex;
+  }
+
+  .site-nav a {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+  }
+
+  .site-nav .nav-admin {
+    margin-left: 0;
+    padding-left: 1rem;
+    border-left: none;
+    border-top: 1px solid rgba(29, 53, 87, 0.12);
+    padding-top: 0.85rem;
+    border-radius: 0;
   }
 
   .hero {
@@ -1026,10 +1123,6 @@ ul {
 
   .trust-logos {
     gap: 1rem 1.5rem;
-  }
-
-  .site-nav {
-    gap: 0.5rem;
   }
 
   .info-grid {
