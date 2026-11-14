@@ -28,5 +28,18 @@ service cloud.firestore {
     match /emails/{emailId} {
       allow read, write: if false;
     }
+
+    // Outreach agent data is server-side only via the outreach function.
+    match /outreachProspects/{slug} {
+      allow read, write: if false;
+    }
+
+    match /outreachEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /outreachSuppression/{slug} {
+      allow read, write: if false;
+    }
   }
 }

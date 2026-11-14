@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase-admin/app";
-import { onCall } from "firebase-functions/v2/https";
+import { onCall, onRequest } from "firebase-functions/v2/https";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { requireAdmin } from "./utils/auth";
 import {
@@ -22,6 +22,7 @@ import {
   handleDeleteContractTemplate,
 } from "./contracts/handlers";
 import { getClientIp, getUserAgent } from "./utils/auth";
+import { handleOutreachRequest } from "./outreach/handlers";
 
 initializeApp();
 setGlobalOptions({ region: process.env.FUNCTIONS_REGION || "us-central1" });
@@ -162,3 +163,13 @@ export const deleteContractTemplate = onCall(callableOptions, async (request) =>
 // Aliases matching spec function names
 export const generateUnsignedPdf = sendContractEmail;
 export const generateSignedPdf = acceptContract;
+
+// Public endpoint behind orynsolutions.io/go/ (two-click "Call me" page for the
+// automotive outreach agent). Agent-only actions check OUTREACH_AGENT_KEY.
+export const outreach = onRequest(
+  {
+    invoker: "public",
+    cors: ["https://orynsolutions.io", "https://www.orynsolutions.io", "https://hamedger.github.io"],
+  },
+  (req, res) => handleOutreachRequest(req, res)
+);
