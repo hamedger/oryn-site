@@ -28,6 +28,13 @@
     .done { text-align:center; display:flex; flex-direction:column; gap:10px; align-items:center; padding:40px 8px; }
     .tick { width:60px; height:60px; border-radius:50%; background:var(--ok); color:#fff; display:grid; place-items:center; font-size:30px; }
     .small { font-size:13px; }
+    .savings { background:#f1f8f3; border:1px solid #cfe8d9; border-radius:10px; padding:12px 14px; color:var(--ink); font-size:14px; line-height:1.45; }
+    .savings b { display:block; font-size:21px; color:var(--ok); }
+    .call { text-align:left; background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; width:100%; }
+    .call ul { margin:6px 0 0; padding-left:18px; color:var(--muted); line-height:1.6; }
+    body.restaurant { --accent:#d9481e; }
+    body.restaurant button { color:#fff; }
+    body.restaurant .brand { color:#c4421a; }
     [hidden] { display:none !important; }
   </style>
 </head>
@@ -39,12 +46,14 @@
     <div style="display:flex;flex-direction:column;gap:14px">
       <h1 id="headline">Let's build your website</h1>
       <div class="concept" id="conceptBox" hidden><img id="concept" alt="Your concept homepage"></div>
-      <p>Leave your number and Hamed will call you within one business day. No obligation.</p>
+      <div class="savings" id="savings" hidden><b id="savingsAmt">About $642 a month</b><span id="savingsText">for a typical restaurant when regulars order direct. We'll work out your real number from your own app statements.</span></div>
+      <p id="intro">Leave your number and Hamed will call you within one business day. No obligation.</p>
       <form id="form" novalidate>
-        <label for="phone">Mobile number</label>
+        <label for="phone" id="phoneLabel">Mobile number</label>
         <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(248) 555-0123">
         <span class="err" id="err" role="alert"></span>
         <button type="submit" id="submit">Call me</button>
+        <span class="small" id="formNote" hidden style="text-align:center;color:var(--muted)">We'll call once. No spam, no obligation.</span>
       </form>
       <p class="small">Rather talk now? Call or text (248) 907-5504.</p>
     </div>
@@ -54,6 +63,9 @@
     <div class="tick">✓</div>
     <h1>Thanks! We'll call you soon.</h1>
     <p>Hamed will call <b id="echo"></b> within one business day.</p>
+    <div class="call" id="callPlan" hidden><b>On the call (15 min):</b>
+      <ul><li>Your real app order volume and fees</li><li>Which POS you use (Clover, Toast or Square)</li><li>How your regulars move to ordering direct</li></ul></div>
+    <p class="small">Rather talk now? Call or text (248) 907-5504.</p>
   </section>
 
   <section class="done" id="unsub" hidden>
@@ -69,6 +81,25 @@
   var demoDesign = (q.get("d") || "A").toUpperCase();
   var demo = !slug || slug === "demo";
   var $ = function (id) { return document.getElementById(id); };
+  var restaurant = false;
+
+  // Restaurant outreach (v=restaurant in the link, or vertical from the API):
+  // direct online ordering with DoorDash Drive delivery, pitched for repeat customers.
+  function useRestaurant(name, estimate) {
+    restaurant = true;
+    document.body.classList.add("restaurant");
+    document.title = (name ? name + " | " : "") + "Keep more of every repeat order | Oryn Solutions";
+    $("headline").textContent = name ? "Keep more of every repeat order, " + name + "." : "Keep more of every repeat order.";
+    $("concept").alt = "Your online ordering concept";
+    if (estimate) $("savingsAmt").textContent = "About " + estimate.replace("/month", " a month");
+    $("savings").hidden = false;
+    $("intro").textContent = "Keep the delivery apps for new customers, and let your regulars order straight from you. Leave your number and Hamed will call you within one business day.";
+    $("phoneLabel").textContent = "Best number to reach the owner or manager";
+    $("submit").textContent = "Call me about my savings";
+    $("formNote").hidden = false;
+    $("callPlan").hidden = false;
+  }
+  if (q.get("v") === "restaurant") useRestaurant("", "");
 
   function showConcept(src) {
     if (!src) return;
@@ -97,14 +128,18 @@
 
   if (demo) {
     var letter = "ABCDE".indexOf(demoDesign) >= 0 ? demoDesign.toLowerCase() : "a";
-    showConcept("samples/design-" + letter + ".jpg");
+    showConcept(restaurant ? "samples/restaurant-" + letter + ".jpg" : "samples/design-" + letter + ".jpg");
   } else {
     fetch(API + "?s=" + encodeURIComponent(slug))
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d) return;
-        $("headline").textContent = "Let's build " + d.name + "'s website";
-        document.title = d.name + " | Oryn Solutions";
+        if (d.vertical === "restaurant" || restaurant) {
+          useRestaurant(d.name, d.estimate || "");
+        } else {
+          $("headline").textContent = "Let's build " + d.name + "'s website";
+          document.title = d.name + " | Oryn Solutions";
+        }
         showConcept(d.imageUrl);
         if (d.phone) $("phone").value = d.phone;
       })
@@ -118,7 +153,11 @@
     if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
     if (digits.length !== 10) { $("err").textContent = "Please enter a 10-digit phone number."; $("phone").focus(); return; }
     $("err").textContent = "";
-    var done = function () { $("echo").textContent = v; $("lead").hidden = true; $("thanks").hidden = false; };
+    var done = function () {
+      $("echo").textContent = v;
+      $("lead").hidden = true;
+      $("thanks").hidden = false;
+    };
     if (demo) { done(); return; }
     $("submit").disabled = true;
     post({ s: slug, phone: digits }).then(done).catch(function () {

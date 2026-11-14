@@ -5,16 +5,17 @@ import type { Request } from "firebase-functions/v2/https";
 import type { Response } from "express";
 import { Resend } from "resend";
 
-// Outreach response tracking for the automotive outreach agent.
+// Outreach response tracking for the automotive and restaurant outreach agents.
+// Each prospect has a vertical ("automotive" by default, or "restaurant"); stats are kept per vertical.
 //
 // Public (called from orynsolutions.io/go/):
-//   GET  ?s=<slug>                         -> shop name, concept image, prefilled phone; logs a click
+//   GET  ?s=<slug>                         -> name, vertical, concept image, estimate, prefilled phone; logs a click
 //   POST {s, phone}                        -> "Call me" lead; emails info@
 //   POST {s, action: "unsubscribe"}        -> adds the shop to the suppression list
 //
 // Agent only (header x-agent-key must equal OUTREACH_AGENT_KEY):
 //   POST {action: "register", prospect}    -> creates/updates a prospect, uploads its concept image
-//   GET  ?action=stats                     -> totals per design and per area for the daily report
+//   GET  ?action=stats[&vertical=restaurant] -> totals per design and per area for that vertical's daily report
 
 const DESIGNS = ["A", "B", "C", "D", "E"] as const;
 type Design = (typeof DESIGNS)[number];
@@ -22,6 +23,26 @@ type Design = (typeof DESIGNS)[number];
 const PROSPECTS = "outreachProspects";
 const EVENTS = "outreachEvents";
 const SUPPRESSION = "outreachSuppression";
+
+const VERTICALS = ["automotive", "restaurant"] as const;
+type Vertical = (typeof VERTICALS)[number];
+const REASONS = ["no_website", "outdated_website", "apps_only", "no_ordering"] as const;
+type Reason = (typeof REASONS)[number];
+
+function asVertical(v: unknown): Vertical {
+  return v === "restaurant" ? "restaurant" : "automotive";
+}
+
+function shortText(v: unknown, max = 80): string | null {
+  return typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
+}
+
+const REASON_TEXT: Record<Reason, string> = {
+  no_website: "no website",
+  outdated_website: "outdated website",
+  apps_only: "on delivery apps, no direct ordering",
+  no_ordering: "no online ordering",
+};
 
 interface Prospect {
   slug: string;
@@ -31,7 +52,10 @@ interface Prospect {
   city?: string | null;
   area?: string | null;
   design: Design;
-  reason?: "no_website" | "outdated_website";
+  vertical?: Vertical;
+  reason?: Reason;
+  apps?: string | null;
+  estimate?: string | null;
   imageUrl?: string | null;
   status?: "sent" | "clicked" | "interested" | "unsubscribed";
   sentAt?: FirebaseFirestore.Timestamp;
@@ -71,6 +95,7 @@ async function logEvent(
     slug: p.slug,
     design: p.design,
     area: p.area ?? null,
+    vertical: asVertical(p.vertical),
     type,
     at: FieldValue.serverTimestamp(),
     ...extra,
@@ -90,15 +115,21 @@ async function notifyLead(p: Prospect, phone: string): Promise<void> {
   const from = process.env.OUTREACH_FROM || process.env.EMAIL_FROM || "Oryn Solutions <info@orynsolutions.io>";
   const name = escapeHtml(p.name);
   const where = escapeHtml([p.city, p.area].filter(Boolean).join(", "));
+  const restaurant = asVertical(p.vertical) === "restaurant";
+  const reason = REASON_TEXT[(p.reason as Reason) || "no_website"] || "no website";
   await new Resend(key).emails.send({
     from,
     to,
-    subject: `New lead: ${p.name} wants a call`,
+    subject: restaurant
+      ? `New restaurant lead: ${p.name}${p.city ? ` (${p.city})` : ""}`
+      : `New lead: ${p.name} wants a call`,
     html: `
-      <p><b>${name}</b>${where ? ` (${where})` : ""} tapped "Call me" on their concept page.</p>
+      <p><b>${name}</b>${where ? ` (${where})` : ""} tapped "${restaurant ? "Call me about my savings" : "Call me"}" on their concept page.</p>
       <p style="font-size:20px"><b>Call ${formatPhone(phone)}</b></p>
       <p>Design they saw: <b>${p.design}</b><br/>
-      Why we reached out: ${p.reason === "outdated_website" ? "outdated website" : "no website"}<br/>
+      Why we reached out: ${escapeHtml(reason)}<br/>
+      ${restaurant && p.apps ? `Delivery apps: ${escapeHtml(p.apps)}<br/>` : ""}
+      ${restaurant && p.estimate ? `Estimate shown: ${escapeHtml(p.estimate)}<br/>` : ""}
       Email on file: ${escapeHtml(p.email || "none")}</p>
       ${p.imageUrl ? `<p><img src="${p.imageUrl}" alt="Concept" style="max-width:560px;border:1px solid #ddd"/></p>` : ""}
     `,
@@ -139,7 +170,10 @@ async function register(body: Record<string, unknown>, res: Response): Promise<v
     city: p.city ?? null,
     area: p.area ?? null,
     design,
-    reason: p.reason === "outdated_website" ? "outdated_website" : "no_website",
+    vertical: asVertical(p.vertical),
+    reason: (REASONS as readonly string[]).includes(p.reason as string) ? (p.reason as Reason) : "no_website",
+    apps: shortText(p.apps),
+    estimate: shortText(p.estimate, 24),
     imageUrl,
     status: "sent",
     sentAt: FieldValue.serverTimestamp() as unknown as FirebaseFirestore.Timestamp,
@@ -148,7 +182,7 @@ async function register(body: Record<string, unknown>, res: Response): Promise<v
   res.json({ ok: true, slug: p.slug, imageUrl });
 }
 
-async function stats(res: Response): Promise<void> {
+async function stats(res: Response, vertical: Vertical): Promise<void> {
   const db = getFirestore();
   const [prospects, events] = await Promise.all([db.collection(PROSPECTS).get(), db.collection(EVENTS).get()]);
   type Row = { sent: number; clicked: Set<string>; interested: Set<string>; unsubscribed: Set<string> };
@@ -156,13 +190,16 @@ async function stats(res: Response): Promise<void> {
   const byDesign: Record<string, Row> = {};
   const byArea: Record<string, Row> = {};
   const row = (m: Record<string, Row>, k: string) => (m[k] ||= blank());
+  // Records written before verticals existed have none and count as automotive.
   prospects.forEach((d) => {
     const p = d.data() as Prospect;
+    if (asVertical(p.vertical) !== vertical) return;
     row(byDesign, p.design).sent++;
     row(byArea, p.area || "unknown").sent++;
   });
   events.forEach((d) => {
-    const e = d.data() as { slug: string; design: string; area: string | null; type: string };
+    const e = d.data() as { slug: string; design: string; area: string | null; type: string; vertical?: string };
+    if (asVertical(e.vertical) !== vertical) return;
     const key = e.type === "click" ? "clicked" : e.type === "interested" ? "interested" : "unsubscribed";
     row(byDesign, e.design)[key].add(e.slug);
     row(byArea, e.area || "unknown")[key].add(e.slug);
@@ -191,7 +228,7 @@ export async function handleOutreachRequest(req: Request, res: Response): Promis
           res.status(403).json({ error: "forbidden" });
           return;
         }
-        await stats(res);
+        await stats(res, asVertical(req.query.vertical));
         return;
       }
       const p = await getProspect(req.query.s);
@@ -203,7 +240,15 @@ export async function handleOutreachRequest(req: Request, res: Response): Promis
         await getFirestore().collection(PROSPECTS).doc(p.slug).update({ status: "clicked" });
         await logEvent(p, "click");
       }
-      res.json({ name: p.name, design: p.design, imageUrl: p.imageUrl ?? null, phone: p.phone ? formatPhone(p.phone) : "" });
+      res.json({
+        name: p.name,
+        design: p.design,
+        vertical: asVertical(p.vertical),
+        city: p.city ?? null,
+        estimate: p.estimate ?? null,
+        imageUrl: p.imageUrl ?? null,
+        phone: p.phone ? formatPhone(p.phone) : "",
+      });
       return;
     }
 

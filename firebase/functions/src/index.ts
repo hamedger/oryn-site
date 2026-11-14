@@ -165,7 +165,7 @@ export const generateUnsignedPdf = sendContractEmail;
 export const generateSignedPdf = acceptContract;
 
 // Public endpoint behind orynsolutions.io/go/ (two-click "Call me" page for the
-// automotive outreach agent). Agent-only actions check OUTREACH_AGENT_KEY.
+// automotive and restaurant outreach agents). Agent-only actions check OUTREACH_AGENT_KEY.
 export const outreach = onRequest(
   {
     invoker: "public",
