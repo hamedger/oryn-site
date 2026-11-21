@@ -16,6 +16,9 @@ import { Resend } from "resend";
 // Agent only (header x-agent-key must equal OUTREACH_AGENT_KEY):
 //   POST {action: "register", prospect}    -> creates/updates a prospect, uploads its concept image
 //   GET  ?action=stats[&vertical=restaurant] -> totals per design and per area for that vertical's daily report
+//   GET  ?action=events&since=<ISO time>[&vertical=restaurant]
+//        -> {events: [{slug, type, at, phone}]} for that vertical since the time (max 1000, oldest first);
+//           the agents use it for hot lead alerts on a click and to honor page unsubscribes in follow-ups
 
 const DESIGNS = ["A", "B", "C", "D", "E"] as const;
 type Design = (typeof DESIGNS)[number];
@@ -220,6 +223,28 @@ async function stats(res: Response, vertical: Vertical): Promise<void> {
   res.json({ byDesign: flat(byDesign), byArea: flat(byArea) });
 }
 
+async function events(res: Response, vertical: Vertical, sinceRaw: unknown): Promise<void> {
+  const since = typeof sinceRaw === "string" ? new Date(sinceRaw) : new Date(Date.now() - 7 * 864e5);
+  if (isNaN(since.getTime())) {
+    res.status(400).json({ error: "invalid_since" });
+    return;
+  }
+  // One range filter on "at" needs no composite index; the vertical is filtered here.
+  const snap = await getFirestore()
+    .collection(EVENTS)
+    .where("at", ">", since)
+    .orderBy("at", "asc")
+    .limit(1000)
+    .get();
+  const out: { slug: string; type: string; at: string; phone: string | null }[] = [];
+  snap.forEach((d) => {
+    const e = d.data() as { slug: string; type: string; vertical?: string; phone?: string; at?: FirebaseFirestore.Timestamp };
+    if (asVertical(e.vertical) !== vertical || !e.at) return;
+    out.push({ slug: e.slug, type: e.type, at: e.at.toDate().toISOString(), phone: e.phone ? formatPhone(e.phone) : null });
+  });
+  res.json({ events: out });
+}
+
 export async function handleOutreachRequest(req: Request, res: Response): Promise<void> {
   try {
     if (req.method === "GET") {
@@ -229,6 +254,14 @@ export async function handleOutreachRequest(req: Request, res: Response): Promis
           return;
         }
         await stats(res, asVertical(req.query.vertical));
+        return;
+      }
+      if (req.query.action === "events") {
+        if (!isAgent(req)) {
+          res.status(403).json({ error: "forbidden" });
+          return;
+        }
+        await events(res, asVertical(req.query.vertical), req.query.since);
         return;
       }
       const p = await getProspect(req.query.s);
